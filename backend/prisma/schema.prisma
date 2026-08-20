@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PaymentStatus {
+  FAILED
+  RECOVERING
+  RECOVERED
+  ESCALATED
+  STOPPED
+}
+
+enum AgentStateEnum {
+  RECOVERY_STARTED
+  ANALYZING
+  DECISION_MADE
+  POLICY_CHECKED
+  ACTION_SCHEDULED
+  ACTION_EXECUTED
+  RESULT_RECEIVED
+  COMPLETED
+  ESCALATED
+  STOPPED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model Customer {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  successCount Int       @default(0)
+  failCount    Int       @default(0)
+  ltv          Float     @default(0)
+  createdAt    DateTime  @default(now())
+  payments     Payment[]
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  amount        Int
+  currency      String        @default("INR")
+  customerId    String
+  customer      Customer      @relation(fields: [customerId], references: [id])
+  status        PaymentStatus @default(FAILED)
+  failureReason String
+  method        String
+  retryCount    Int           @default(0)
+  createdAt     DateTime      @default(now())
+  recoveredAt   DateTime?
+
+  agentDecisions   AgentDecision[]
+  recoveryAttempts RecoveryAttempt[]
+  agentState       AgentState?
+  auditLogs        AuditLog[]
+}
+
+model AgentDecision {
+  id                  String   @id @default(cuid())
+  paymentId           String
+  payment             Payment  @relation(fields: [paymentId], references: [id])
+  failureType         String
+  recoverabilityScore Float
+  strategy            String
+  retryAfterMinutes   Int?
+  confidence          Float
+  reasoning           String
+  createdAt           DateTime @default(now())
+
+  policyChecks     PolicyCheck[]
+  recoveryAttempts RecoveryAttempt[]
+}
+
+model PolicyCheck {
+  id         String        @id @default(cuid())
+  decisionId String
+  decision   AgentDecision @relation(fields: [decisionId], references: [id])
+  ruleName   String
+  passed     Boolean
+  reason     String
+  createdAt  DateTime      @default(now())
+}
+
+model RecoveryAttempt {
+  id          String        @id @default(cuid())
+  paymentId   String
+  payment     Payment       @relation(fields: [paymentId], references: [id])
+  decisionId  String
+  decision    AgentDecision @relation(fields: [decisionId], references: [id])
+  scheduledAt DateTime?
+  executedAt  DateTime?
+  outcome     String?
+  createdAt   DateTime      @default(now())
+}
+
+model AgentState {
+  id           String         @id @default(cuid())
+  paymentId    String         @unique
+  payment      Payment        @relation(fields: [paymentId], references: [id])
+  currentState AgentStateEnum @default(RECOVERY_STARTED)
+  updatedAt    DateTime       @updatedAt
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  paymentId String
+  payment   Payment  @relation(fields: [paymentId], references: [id])
+  event     String
+  details   String?
+  timestamp DateTime @default(now())
+}
