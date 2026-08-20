@@ -1,4 +1,4 @@
-import { prisma } from '../src/lib/prismaClient.js';
+import { prisma } from '../lib/prismaClient.js';
 
 export async function getPaymentDetails(paymentId) {
   return prisma.payment.findUnique({

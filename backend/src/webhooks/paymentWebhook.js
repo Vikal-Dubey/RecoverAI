@@ -1,4 +1,4 @@
-import { prisma } from '../src/lib/prismaClient.js';
+import { prisma } from '../lib/prismaClient.js';
 import { analyzePayment } from '../agents/recoveryAgent.js';
 import { evaluatePolicy } from '../recovery/policyEngine.js';
 import { scheduleRetry, notifyCustomer, escalateToHuman, stopRecovery } from '../agents/agentTools.js';

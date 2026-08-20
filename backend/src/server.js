@@ -5,7 +5,8 @@ import cookieParser from 'cookie-parser';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { handlePaymentFailedEvent } from './webhooks/paymentWebhook.js';
-import { prisma } from './src/lib/prismaClient.js';
+import { prisma } from './lib/prismaClient.js';
+import { executeRetryAttempt } from './recovery/recoveryService.js';
 
 const app = express();
 const httpServer = createServer(app);
@@ -49,6 +50,39 @@ app.post('/payments/simulate-failure', async (req, res) => {
     io.emit('recovery:completed', result);
 
     res.json({ success: true, result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// --- Execute a scheduled retry, and loop the agent again if it fails ---
+app.post('/payments/:id/recovery/execute', async (req, res) => {
+  try {
+    const payment = await prisma.payment.findUnique({ where: { id: req.params.id } });
+    const latestAttempt = await prisma.recoveryAttempt.findFirst({
+      where: { paymentId: payment.id, executedAt: null },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!latestAttempt) return res.status(404).json({ error: 'No pending recovery attempt found' });
+
+    io.emit('recovery:executing', { paymentId: payment.id });
+
+    const result = await executeRetryAttempt(latestAttempt.id);
+    io.emit('recovery:completed', result);
+
+    // If it failed and retries remain, loop the agent again automatically
+    if (result.outcome === 'failed' && result.payment.retryCount < 3) {
+      const loopResult = await handlePaymentFailedEvent({
+        event: 'payment.failed',
+        payload: { payment: { id: payment.id } },
+      });
+      io.emit('recovery:decision', loopResult);
+      return res.json({ result, loopResult });
+    }
+
+    res.json({ result });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, error: err.message });
