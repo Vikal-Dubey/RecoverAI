@@ -1103,6 +1103,7 @@ export const AgentDecisionScalarFieldEnum = {
   retryAfterMinutes: 'retryAfterMinutes',
   confidence: 'confidence',
   reasoning: 'reasoning',
+  alternativesConsidered: 'alternativesConsidered',
   createdAt: 'createdAt'
 } as const
 

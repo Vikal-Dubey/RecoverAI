@@ -1,18 +1,8 @@
 import { GoogleGenAI } from '@google/genai';
 import { getPaymentDetails, getCustomerHistory, getRecoveryHistory } from './agentTools.js';
+import { RECOVERY_AGENT_SYSTEM_PROMPT } from './prompts.js';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
-const SYSTEM_PROMPT = `You are a payment recovery strategist for a fintech company.
-Given a failed payment's details, customer history, and recovery history, propose the best recovery action.
-Respond ONLY with valid JSON, no other text, in this exact shape:
-{
-  "strategy": "retry_now" | "retry_delayed" | "notify_customer" | "escalate" | "stop",
-  "retryAfterMinutes": number or null,
-  "recoverabilityScore": number between 0 and 1,
-  "confidence": number between 0 and 1,
-  "reasoning": "one to two sentence explanation"
-}`;
 
 export async function analyzePayment(paymentId) {
   const payment = await getPaymentDetails(paymentId);
@@ -20,7 +10,7 @@ export async function analyzePayment(paymentId) {
   const recoveryHistory = await getRecoveryHistory(paymentId);
 
   const userPrompt = `
-Payment: ${JSON.stringify({
+    Payment: ${JSON.stringify({
     amount: payment.amount,
     currency: payment.currency,
     failureReason: payment.failureReason,
@@ -37,11 +27,21 @@ Recovery History: ${JSON.stringify(recoveryHistory)}
   const response = await ai.models.generateContent({
     model: 'gemini-3.6-flash',
     contents: userPrompt,
-    config: { systemInstruction: SYSTEM_PROMPT },
+    config: { systemInstruction: RECOVERY_AGENT_SYSTEM_PROMPT },
   });
 
   const text = response.text.trim().replace(/^```json\s*|\s*```$/g, '');
-  const proposal = JSON.parse(text);
+  const raw = JSON.parse(text);
+
+  // Flatten into the shape the rest of the app expects
+  const proposal = {
+    strategy: raw.strategy.action,
+    retryAfterMinutes: raw.strategy.delayMinutes,
+    recoverabilityScore: raw.recoverabilityScore,
+    confidence: raw.diagnosis.confidence,
+    reasoning: raw.reasoning,
+    alternativesConsidered: raw.alternativesConsidered,
+  };
 
   return { payment, proposal };
 }

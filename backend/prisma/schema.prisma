@@ -75,6 +75,7 @@ model AgentDecision {
   retryAfterMinutes   Int?
   confidence          Float
   reasoning           String
+  alternativesConsidered String?   // <-- NEW: JSON string of rejected alternatives
   createdAt           DateTime @default(now())
 
   policyChecks     PolicyCheck[]

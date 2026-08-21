@@ -28,6 +28,7 @@ export async function handlePaymentFailedEvent(webhookPayload) {
       retryAfterMinutes: proposal.retryAfterMinutes,
       confidence: proposal.confidence,
       reasoning: proposal.reasoning,
+      alternativesConsidered: JSON.stringify(proposal.alternativesConsidered),
     },
   });
 

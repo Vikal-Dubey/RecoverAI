@@ -447,10 +447,6 @@ export type RecoveryAttemptUncheckedUpdateManyWithoutDecisionNestedInput = {
   deleteMany?: Prisma.RecoveryAttemptScalarWhereInput | Prisma.RecoveryAttemptScalarWhereInput[]
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type RecoveryAttemptCreateWithoutPaymentInput = {
   id?: string
   scheduledAt?: Date | string | null
