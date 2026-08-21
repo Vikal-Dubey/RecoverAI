@@ -47,17 +47,20 @@ model Customer {
 }
 
 model Payment {
-  id            String        @id @default(cuid())
-  amount        Int
-  currency      String        @default("INR")
-  customerId    String
-  customer      Customer      @relation(fields: [customerId], references: [id])
-  status        PaymentStatus @default(FAILED)
-  failureReason String
-  method        String
-  retryCount    Int           @default(0)
-  createdAt     DateTime      @default(now())
-  recoveredAt   DateTime?
+  id               String            @id @default(cuid())
+  amount           Int
+  currency         String            @default("INR")
+  customerId       String
+  customer         Customer          @relation(fields: [customerId], references: [id])
+  status           PaymentStatus     @default(FAILED)
+  failureReason    String
+  method           String
+  retryCount       Int               @default(0)
+  notificationCount Int              @default(0)   // NEW
+  lastNotifiedAt   DateTime?                        // NEW
+  lastRetryAt      DateTime?                        // NEW
+  createdAt        DateTime          @default(now())
+  recoveredAt      DateTime?
 
   agentDecisions   AgentDecision[]
   recoveryAttempts RecoveryAttempt[]
@@ -75,7 +78,7 @@ model AgentDecision {
   retryAfterMinutes   Int?
   confidence          Float
   reasoning           String
-  alternativesConsidered String?   // <-- NEW: JSON string of rejected alternatives
+  alternativesConsidered Json?   // <-- NEW: JSON string of rejected alternatives
   createdAt           DateTime @default(now())
 
   policyChecks     PolicyCheck[]

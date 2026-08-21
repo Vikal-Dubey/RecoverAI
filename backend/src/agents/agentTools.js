@@ -33,13 +33,23 @@ export async function getRecoveryHistory(paymentId) {
 
 export async function scheduleRetry(paymentId, decisionId, delayMinutes) {
   const scheduledAt = new Date(Date.now() + delayMinutes * 60 * 1000);
+  await prisma.payment.update({
+    where: { id: paymentId },
+    data: { lastRetryAt: new Date() },
+  });
   return prisma.recoveryAttempt.create({
     data: { paymentId, decisionId, scheduledAt },
   });
 }
 
 export async function notifyCustomer(paymentId) {
-  // Simulated — in production this would call an email/SMS service
+  await prisma.payment.update({
+    where: { id: paymentId },
+    data: {
+      lastNotifiedAt: new Date(),
+      notificationCount: { increment: 1 },
+    },
+  });
   console.log(`[NOTIFY] Customer notified for payment ${paymentId}`);
   return { notified: true };
 }
