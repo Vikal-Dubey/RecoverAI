@@ -1090,6 +1090,8 @@ export const PaymentScalarFieldEnum = {
   notificationCount: 'notificationCount',
   lastNotifiedAt: 'lastNotifiedAt',
   lastRetryAt: 'lastRetryAt',
+  experimentBatchId: 'experimentBatchId',
+  experimentArm: 'experimentArm',
   createdAt: 'createdAt',
   recoveredAt: 'recoveredAt'
 } as const

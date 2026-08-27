@@ -8,6 +8,27 @@ const RETRY_PROBABILITIES = {
   hard_decline: [0], // never recoverable
 };
 
+const NOTIFICATION_SUCCESS_PROBABILITIES = {
+  insufficient_funds: 0.45,   // customer adds funds
+  expired_card: 0.55,         // customer updates card details
+  temporary_decline: 0.35,
+  bank_timeout: 0.30,
+  network_error: 0.30,
+  hard_decline: 0.05,         // rarely resolvable even with contact
+};
+
+/**
+ * Simulates whether a notified customer resolves the payment themselves.
+ * @param {string} failureReason
+ * @returns {{ success: boolean, probability: number }}
+ */
+
+export function simulateNotificationOutcome(failureReason) {
+  const probability = NOTIFICATION_SUCCESS_PROBABILITIES[failureReason] ?? 0.2;
+  const success = Math.random() < probability;
+  return { success, probability };
+}
+
 /**
  * Simulates the outcome of a retry attempt.
  * @param {string} failureReason

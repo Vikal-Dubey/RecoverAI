@@ -7,27 +7,6 @@ datasource db {
   provider = "postgresql"
 }
 
-enum PaymentStatus {
-  FAILED
-  RECOVERING
-  RECOVERED
-  ESCALATED
-  STOPPED
-}
-
-enum AgentStateEnum {
-  RECOVERY_STARTED
-  ANALYZING
-  DECISION_MADE
-  POLICY_CHECKED
-  ACTION_SCHEDULED
-  ACTION_EXECUTED
-  RESULT_RECEIVED
-  COMPLETED
-  ESCALATED
-  STOPPED
-}
-
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
@@ -47,79 +26,100 @@ model Customer {
 }
 
 model Payment {
-  id               String            @id @default(cuid())
-  amount           Int
-  currency         String            @default("INR")
-  customerId       String
-  customer         Customer          @relation(fields: [customerId], references: [id])
-  status           PaymentStatus     @default(FAILED)
-  failureReason    String
-  method           String
-  retryCount       Int               @default(0)
-  notificationCount Int              @default(0)   // NEW
-  lastNotifiedAt   DateTime?                        // NEW
-  lastRetryAt      DateTime?                        // NEW
-  createdAt        DateTime          @default(now())
-  recoveredAt      DateTime?
-
-  agentDecisions   AgentDecision[]
-  recoveryAttempts RecoveryAttempt[]
-  agentState       AgentState?
-  auditLogs        AuditLog[]
+  id                String            @id @default(cuid())
+  amount            Int
+  currency          String            @default("INR")
+  customerId        String
+  status            PaymentStatus     @default(FAILED)
+  failureReason     String
+  method            String
+  retryCount        Int               @default(0)
+  createdAt         DateTime          @default(now())
+  recoveredAt       DateTime?
+  lastNotifiedAt    DateTime?
+  lastRetryAt       DateTime?
+  notificationCount Int               @default(0)
+  experimentArm     String?
+  experimentBatchId String?
+  agentDecisions    AgentDecision[]
+  agentState        AgentState?
+  auditLogs         AuditLog[]
+  customer          Customer          @relation(fields: [customerId], references: [id])
+  recoveryAttempts  RecoveryAttempt[]
 }
 
 model AgentDecision {
-  id                  String   @id @default(cuid())
-  paymentId           String
-  payment             Payment  @relation(fields: [paymentId], references: [id])
-  failureType         String
-  recoverabilityScore Float
-  strategy            String
-  retryAfterMinutes   Int?
-  confidence          Float
-  reasoning           String
-  alternativesConsidered Json?   // <-- NEW: JSON string of rejected alternatives
-  createdAt           DateTime @default(now())
-
-  policyChecks     PolicyCheck[]
-  recoveryAttempts RecoveryAttempt[]
+  id                     String            @id @default(cuid())
+  paymentId              String
+  failureType            String
+  recoverabilityScore    Float
+  strategy               String
+  retryAfterMinutes      Int?
+  confidence             Float
+  reasoning              String
+  createdAt              DateTime          @default(now())
+  alternativesConsidered Json?
+  payment                Payment           @relation(fields: [paymentId], references: [id])
+  policyChecks           PolicyCheck[]
+  recoveryAttempts       RecoveryAttempt[]
 }
 
 model PolicyCheck {
   id         String        @id @default(cuid())
   decisionId String
-  decision   AgentDecision @relation(fields: [decisionId], references: [id])
   ruleName   String
   passed     Boolean
   reason     String
   createdAt  DateTime      @default(now())
+  decision   AgentDecision @relation(fields: [decisionId], references: [id])
 }
 
 model RecoveryAttempt {
   id          String        @id @default(cuid())
   paymentId   String
-  payment     Payment       @relation(fields: [paymentId], references: [id])
   decisionId  String
-  decision    AgentDecision @relation(fields: [decisionId], references: [id])
   scheduledAt DateTime?
   executedAt  DateTime?
   outcome     String?
   createdAt   DateTime      @default(now())
+  decision    AgentDecision @relation(fields: [decisionId], references: [id])
+  payment     Payment       @relation(fields: [paymentId], references: [id])
 }
 
 model AgentState {
   id           String         @id @default(cuid())
   paymentId    String         @unique
-  payment      Payment        @relation(fields: [paymentId], references: [id])
   currentState AgentStateEnum @default(RECOVERY_STARTED)
   updatedAt    DateTime       @updatedAt
+  payment      Payment        @relation(fields: [paymentId], references: [id])
 }
 
 model AuditLog {
   id        String   @id @default(cuid())
   paymentId String
-  payment   Payment  @relation(fields: [paymentId], references: [id])
   event     String
   details   String?
   timestamp DateTime @default(now())
+  payment   Payment  @relation(fields: [paymentId], references: [id])
+}
+
+enum PaymentStatus {
+  FAILED
+  RECOVERING
+  RECOVERED
+  ESCALATED
+  STOPPED
+}
+
+enum AgentStateEnum {
+  RECOVERY_STARTED
+  ANALYZING
+  DECISION_MADE
+  POLICY_CHECKED
+  ACTION_SCHEDULED
+  ACTION_EXECUTED
+  RESULT_RECEIVED
+  COMPLETED
+  ESCALATED
+  STOPPED
 }

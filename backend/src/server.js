@@ -7,6 +7,7 @@ import { Server } from 'socket.io';
 import { handlePaymentFailedEvent } from './webhooks/paymentWebhook.js';
 import { prisma } from './lib/prismaClient.js';
 import { executeRetryAttempt } from './recovery/recoveryService.js';
+import { runExperiment } from './recovery/experimentService.js';
 
 const app = express();
 const httpServer = createServer(app);
@@ -92,7 +93,7 @@ app.post('/payments/:id/recovery/execute', async (req, res) => {
 // --- List failed payments (for dashboard) ---
 app.get('/payments/failed', async (req, res) => {
   const payments = await prisma.payment.findMany({
-    where: { status: 'FAILED' },
+    where: { status: 'FAILED', experimentBatchId: null },
     include: { customer: true },
     orderBy: { createdAt: 'desc' },
     take: 50,
@@ -114,6 +115,17 @@ app.get('/payments/:id', async (req, res) => {
   });
   if (!payment) return res.status(404).json({ error: 'Not found' });
   res.json(payment);
+});
+
+app.post('/experiments/run', async (req, res) => {
+  try {
+    const sampleSize = req.body?.sampleSize || 40;
+    const result = await runExperiment(sampleSize);
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // --- Dashboard stats ---
