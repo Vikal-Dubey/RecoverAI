@@ -50,6 +50,15 @@ export async function notifyCustomer(paymentId) {
       notificationCount: { increment: 1 },
     },
   });
+
+  await prisma.auditLog.create({
+    data: {
+      paymentId,
+      event: 'CUSTOMER_NOTIFIED',
+      details: 'Customer notified to take action (e.g. update card, add funds)',
+    },
+  });
+
   console.log(`[NOTIFY] Customer notified for payment ${paymentId}`);
   return { notified: true };
 }
@@ -59,6 +68,15 @@ export async function escalateToHuman(paymentId, reason) {
     where: { id: paymentId },
     data: { status: 'ESCALATED' },
   });
+
+  await prisma.auditLog.create({
+    data: {
+      paymentId,
+      event: 'ESCALATED',
+      details: reason,
+    },
+  });
+
   console.log(`[ESCALATE] Payment ${paymentId} escalated: ${reason}`);
 }
 
@@ -67,5 +85,14 @@ export async function stopRecovery(paymentId, reason) {
     where: { id: paymentId },
     data: { status: 'STOPPED' },
   });
+
+  await prisma.auditLog.create({
+    data: {
+      paymentId,
+      event: 'RECOVERY_STOPPED',
+      details: reason,
+    },
+  });
+
   console.log(`[STOP] Recovery stopped for payment ${paymentId}: ${reason}`);
 }
