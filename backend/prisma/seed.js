@@ -12,7 +12,22 @@ const FAILURE_REASONS = [
 
 const METHODS = ['card', 'upi', 'netbanking'];
 
+async function clearExistingData() {
+  console.log('Clearing existing data...');
+  // Delete in FK-safe order: children before parents
+  await prisma.policyCheck.deleteMany();
+  await prisma.auditLog.deleteMany();
+  await prisma.recoveryAttempt.deleteMany();
+  await prisma.agentDecision.deleteMany();
+  await prisma.agentState.deleteMany();
+  await prisma.payment.deleteMany();
+  await prisma.customer.deleteMany();
+  console.log('Cleared.');
+}
+
 async function main() {
+  await clearExistingData();
+
   console.log('Seeding database...');
 
   // 1. Create customers

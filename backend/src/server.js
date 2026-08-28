@@ -8,6 +8,7 @@ import { handlePaymentFailedEvent } from './webhooks/paymentWebhook.js';
 import { prisma } from './lib/prismaClient.js';
 import { executeRetryAttempt } from './recovery/recoveryService.js';
 import { runExperiment } from './recovery/experimentService.js';
+import { withRetry } from './lib/withRetry.js';
 
 const app = express();
 const httpServer = createServer(app);
@@ -37,7 +38,9 @@ app.post('/webhooks/payment-failed', async (req, res) => {
 // --- Dev/demo trigger: builds a gateway-shaped event internally ---
 app.post('/payments/simulate-failure', async (req, res) => {
   try {
-    const payment = await prisma.payment.findFirst({ where: { status: 'FAILED' } });
+    const payment = await withRetry(() =>
+      prisma.payment.findFirst({ where: { status: 'FAILED' } })
+    );
     if (!payment) return res.status(404).json({ error: 'No failed payments available. Run seed first.' });
 
     const webhookPayload = {
@@ -60,11 +63,17 @@ app.post('/payments/simulate-failure', async (req, res) => {
 // --- Execute a scheduled retry, and loop the agent again if it fails ---
 app.post('/payments/:id/recovery/execute', async (req, res) => {
   try {
-    const payment = await prisma.payment.findUnique({ where: { id: req.params.id } });
-    const latestAttempt = await prisma.recoveryAttempt.findFirst({
-      where: { paymentId: payment.id, executedAt: null },
-      orderBy: { createdAt: 'desc' },
-    });
+    const payment = await withRetry(() =>
+      prisma.payment.findUnique({ where: { id: req.params.id } })
+    );
+    if (!payment) return res.status(404).json({ error: 'Payment not found' });
+
+    const latestAttempt = await withRetry(() =>
+      prisma.recoveryAttempt.findFirst({
+        where: { paymentId: payment.id, executedAt: null },
+        orderBy: { createdAt: 'desc' },
+      })
+    );
 
     if (!latestAttempt) return res.status(404).json({ error: 'No pending recovery attempt found' });
 
@@ -92,29 +101,71 @@ app.post('/payments/:id/recovery/execute', async (req, res) => {
 
 // --- List failed payments (for dashboard) ---
 app.get('/payments/failed', async (req, res) => {
-  const payments = await prisma.payment.findMany({
-    where: { status: 'FAILED', experimentBatchId: null },
-    include: { customer: true },
-    orderBy: { createdAt: 'desc' },
-    take: 50,
-  });
-  res.json(payments);
+  try {
+    const payments = await withRetry(() =>
+      prisma.payment.findMany({
+        where: { status: 'FAILED', experimentBatchId: null },
+        include: { customer: true },
+        orderBy: { createdAt: 'desc' },
+        take: 50,
+      })
+    );
+    res.json(payments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- List payments (for dashboard table), optionally filtered by status ---
+app.get('/payments', async (req, res) => {
+  const { status } = req.query; // FAILED | RECOVERING | RECOVERED | ESCALATED | STOPPED
+  try {
+    const payments = await withRetry(() =>
+      prisma.payment.findMany({
+        where: {
+          experimentBatchId: null,
+          ...(status ? { status } : {}),
+        },
+        include: {
+          customer: true,
+          agentDecisions: {
+            orderBy: { createdAt: 'desc' },
+            take: 1,
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 50,
+      })
+    );
+    res.json(payments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // --- Payment detail + timeline (for dashboard detail view) ---
 app.get('/payments/:id', async (req, res) => {
-  const payment = await prisma.payment.findUnique({
-    where: { id: req.params.id },
-    include: {
-      customer: true,
-      agentDecisions: { include: { policyChecks: true }, orderBy: { createdAt: 'desc' } },
-      recoveryAttempts: true,
-      agentState: true,
-      auditLogs: { orderBy: { timestamp: 'asc' } },
-    },
-  });
-  if (!payment) return res.status(404).json({ error: 'Not found' });
-  res.json(payment);
+  try {
+    const payment = await withRetry(() =>
+      prisma.payment.findUnique({
+        where: { id: req.params.id },
+        include: {
+          customer: true,
+          agentDecisions: { include: { policyChecks: true }, orderBy: { createdAt: 'desc' } },
+          recoveryAttempts: true,
+          agentState: true,
+          auditLogs: { orderBy: { timestamp: 'asc' } },
+        },
+      })
+    );
+    if (!payment) return res.status(404).json({ error: 'Not found' });
+    res.json(payment);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/experiments/run', async (req, res) => {
@@ -130,18 +181,27 @@ app.post('/experiments/run', async (req, res) => {
 
 // --- Dashboard stats ---
 app.get('/dashboard/stats', async (req, res) => {
-  const total = await prisma.payment.count();
-  const recovered = await prisma.payment.count({ where: { status: 'RECOVERED' } });
-  const escalated = await prisma.payment.count({ where: { status: 'ESCALATED' } });
-  const failed = await prisma.payment.count({ where: { status: 'FAILED' } });
+  try {
+    const [total, recovered, escalated, failed] = await withRetry(() =>
+      Promise.all([
+        prisma.payment.count(),
+        prisma.payment.count({ where: { status: 'RECOVERED' } }),
+        prisma.payment.count({ where: { status: 'ESCALATED' } }),
+        prisma.payment.count({ where: { status: 'FAILED' } }),
+      ])
+    );
 
-  res.json({
-    total,
-    recovered,
-    escalated,
-    failed,
-    recoveryRate: total > 0 ? (recovered / total) : 0,
-  });
+    res.json({
+      total,
+      recovered,
+      escalated,
+      failed,
+      recoveryRate: total > 0 ? recovered / total : 0,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 io.on('connection', (socket) => {
@@ -153,3 +213,8 @@ const PORT = process.env.PORT || 5000;
 httpServer.listen(PORT, () => {
   console.log(`RecoverAI backend running on port ${PORT}`);
 });
+
+// Warm up the DB connection immediately so the first real request isn't penalized
+withRetry(() => prisma.customer.count())
+  .then(() => console.log('[DB] Warmed up and ready'))
+  .catch((err) => console.warn('[DB] Warm-up failed, will retry on first request:', err.message));

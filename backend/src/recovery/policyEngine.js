@@ -57,24 +57,36 @@ export function evaluatePolicy(payment, proposal) {
     checks.push({ rule: 'NOTIFICATION_LIMIT', passed: true, reason: 'No prior notification' });
   }
 
+    let reason = null;
+
   // --- Decide final action based on rule outcomes, in priority order ---
   if (isHardDecline || !withinWindow || !withinRetryLimit) {
     action = 'stop';
-    approved = true; // "approved" to stop — a deliberate, policy-driven halt
+    approved = true;
+    reason = isHardDecline
+      ? 'Hard decline — non-recoverable'
+      : !withinWindow
+      ? `Recovery window exceeded (${daysSinceFailure.toFixed(1)} of ${RECOVERY_WINDOW_DAYS} days)`
+      : `Max retries reached (${payment.retryCount}/${MAX_RETRIES})`;
   } else if (isExpiredCard) {
     action = notificationOk ? 'notify_customer' : 'stop';
     approved = true;
+    reason = notificationOk
+      ? 'Expired card requires customer action'
+      : `Notification limit reached (${payment.notificationCount}/${MAX_NOTIFICATIONS_PER_24H} in 24h)`;
   } else if (isHighValue) {
     action = 'escalate';
     approved = true;
+    reason = `High-value payment (₹${(payment.amount / 100).toFixed(2)}) requires human review`;
   } else if ((action === 'retry_now' || action === 'retry_delayed') && !intervalOk) {
-    // AI wanted to retry too soon — policy delays it instead of blocking outright
     action = 'retry_delayed';
     approved = true;
+    reason = 'Retry delayed — minimum interval between attempts not yet elapsed';
   } else if (action === 'notify_customer' && !notificationOk) {
     action = 'stop';
     approved = false;
+    reason = `Notification limit reached (${payment.notificationCount}/${MAX_NOTIFICATIONS_PER_24H} in 24h)`;
   }
 
-  return { approved, action, checks };
+  return { approved, action, checks, reason };
 }

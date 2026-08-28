@@ -4,6 +4,13 @@ import { analyzePayment } from '../agents/recoveryAgent.js';
 import { evaluatePolicy } from './policyEngine.js';
 import { simulateRetryOutcome, simulateNotificationOutcome } from './simulator.js';
 
+// Assumed operational cost per action, in paise — used for a fairer, cost-adjusted comparison.
+// A retry attempt costs more than a notification: gateway/processing fees + risk of the bank
+// flagging repeated attempts as suspicious. A notification costs less (SMS/email) but still
+// carries a small customer-friction cost.
+const COST_PER_RETRY_ATTEMPT = 800;      // ₹8 per attempt
+const COST_PER_NOTIFICATION = 200;       // ₹2 per notification
+
 const FAILURE_REASONS = [
   'insufficient_funds',
   'network_error',
@@ -309,44 +316,29 @@ function buildFailureTypeBreakdown(results) {
 }
 
 function aggregate(results, payments) {
-  const revenueAtRisk = payments.reduce(
-    (sum, p) => sum + p.amount,
-    0
-  );
-
+  const revenueAtRisk = payments.reduce((sum, p) => sum + p.amount, 0);
   const recovered = results.filter((r) => r.recovered);
+  const revenueRecovered = recovered.reduce((sum, r) => sum + r.amount, 0);
+  const totalAttempts = results.reduce((sum, r) => sum + r.attempts, 0);
+  const escalations = results.filter((r) => r.escalated).length;
+  const contacts = results.reduce((sum, r) => sum + r.contacted, 0);
 
-  const revenueRecovered = recovered.reduce(
-    (sum, r) => sum + r.amount,
-    0
-  );
+  const totalCost =
+    totalAttempts * COST_PER_RETRY_ATTEMPT +
+    contacts * COST_PER_NOTIFICATION;
 
-  const totalAttempts = results.reduce(
-    (sum, r) => sum + r.attempts,
-    0
-  );
-
-  const escalations = results.filter(
-    (r) => r.escalated
-  ).length;
-
-  const contacts = results.reduce(
-    (sum, r) => sum + r.contacted,
-    0
-  );
+  const netValueRecovered = revenueRecovered - totalCost;
 
   return {
     paymentsTested: results.length,
     revenueAtRisk,
     revenueRecovered,
-    recoveryRate: results.length
-      ? recovered.length / results.length
-      : 0,
-    avgAttempts: results.length
-      ? totalAttempts / results.length
-      : 0,
+    recoveryRate: results.length ? recovered.length / results.length : 0,
+    avgAttempts: results.length ? totalAttempts / results.length : 0,
     escalations,
     customerContacts: contacts,
+    operationalCost: totalCost,
+    netValueRecovered,
   };
 }
 
@@ -400,20 +392,15 @@ export async function runExperiment(sampleSize = 40) {
     baselinePayments
   );
 
-  return {
+    return {
     batchId,
     sampleSize,
-
     recoverAI: {
       ...recoverAIStats,
-      failureTypeBreakdown:
-        buildFailureTypeBreakdown(recoverAIResults),
+      failureTypeBreakdown: buildFailureTypeBreakdown(recoverAIResults),
     },
-
     baseline: baselineStats,
-
-    incrementalRevenue:
-      recoverAIStats.revenueRecovered -
-      baselineStats.revenueRecovered,
+    incrementalRevenue: recoverAIStats.revenueRecovered - baselineStats.revenueRecovered,
+    incrementalNetValue: recoverAIStats.netValueRecovered - baselineStats.netValueRecovered,
   };
 }

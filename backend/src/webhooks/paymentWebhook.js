@@ -63,11 +63,11 @@ export async function handlePaymentFailedEvent(webhookPayload) {
       await prisma.agentState.update({ where: { paymentId: payment.id }, data: { currentState: 'COMPLETED' } });
       break;
     case 'escalate':
-      await escalateToHuman(payment.id, policyResult.checks.find(c => !c.passed)?.reason || 'Policy escalation');
+      await escalateToHuman(payment.id, policyResult.reason || 'Policy escalation');
       await prisma.agentState.update({ where: { paymentId: payment.id }, data: { currentState: 'ESCALATED' } });
       break;
     case 'stop':
-      await stopRecovery(payment.id, policyResult.checks.find(c => !c.passed)?.reason || 'Policy stop');
+      await stopRecovery(payment.id, policyResult.reason || 'Policy stop');
       await prisma.agentState.update({ where: { paymentId: payment.id }, data: { currentState: 'STOPPED' } });
       break;
   }

@@ -5,9 +5,9 @@ import 'dotenv/config';
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false },
-  connectionTimeoutMillis: 20000, // give Neon cold-start up to 20s to wake up
-  max: 5,                          // small pool is fine for a solo dev/demo app
-  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 20000,
+  max: 5,
+  idleTimeoutMillis: 120000, // don't close connections just because Gemini took a while to respond
 });
 
 export const prisma = new PrismaClient({ adapter });
