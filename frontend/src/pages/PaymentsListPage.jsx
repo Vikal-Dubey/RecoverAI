@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getPayments, simulateFailure } from '../api/payments';
 import StatusBadge from '../components/StatusBadge';
 import { formatINR, formatFailureReason } from '../utils/format';
+import DashboardStats from '../components/DashboardStats';
 
 const FILTERS = [
   { label: 'All', value: null },
@@ -70,6 +71,8 @@ export default function PaymentsListPage() {
 
   return (
     <div>
+      <DashboardStats />
+      
       <div className="flex items-center justify-between mb-4">
         <div className="flex gap-2">
           {FILTERS.map((f) => (
