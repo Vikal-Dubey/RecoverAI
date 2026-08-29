@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getPaymentDetail } from '../api/payments';
 import StatusBadge from '../components/StatusBadge';
@@ -7,6 +7,7 @@ import PolicyChecksPanel from '../components/PolicyChecksPanel';
 import Timeline from '../components/Timeline';
 import Card from '../components/Card';
 import { formatINR, formatFailureReason } from '../utils/format';
+import { useSocketEvent } from '../hooks/useSocketEvent';
 
 export default function PaymentDetailPage() {
   const { id } = useParams();
@@ -35,6 +36,25 @@ export default function PaymentDetailPage() {
       ignore = true;
     };
   }, [id]);
+
+  const loadPayment = useCallback(async () => {
+    try {
+      const data = await getPaymentDetail(id);
+      setPayment(data);
+    } catch (err) {
+      setError(err.message);
+    }
+  }, [id]);
+
+  const handleRealtimeUpdate = useCallback(
+    (result) => {
+      if (result?.payment?.id === id) loadPayment();
+    },
+    [id, loadPayment]
+  );
+
+  useSocketEvent('recovery:completed', handleRealtimeUpdate);
+  useSocketEvent('recovery:decision', handleRealtimeUpdate);
 
   if (loading) return <div className="text-gray-400 text-sm py-8 text-center">Loading…</div>;
   if (error) return <div className="text-red-600 text-sm py-8 text-center">{error}</div>;

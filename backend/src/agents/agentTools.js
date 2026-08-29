@@ -1,4 +1,5 @@
 import { prisma } from '../lib/prismaClient.js';
+import { simulateNotificationOutcome } from '../recovery/simulator.js';
 
 export async function getPaymentDetails(paymentId) {
   return prisma.payment.findUnique({
@@ -42,7 +43,7 @@ export async function scheduleRetry(paymentId, decisionId, delayMinutes) {
   });
 }
 
-export async function notifyCustomer(paymentId) {
+export async function notifyCustomer(paymentId, failureReason) {
   await prisma.payment.update({
     where: { id: paymentId },
     data: {
@@ -51,16 +52,32 @@ export async function notifyCustomer(paymentId) {
     },
   });
 
+  const { success, probability } = simulateNotificationOutcome(failureReason);
+
   await prisma.auditLog.create({
     data: {
       paymentId,
       event: 'CUSTOMER_NOTIFIED',
-      details: 'Customer notified to take action (e.g. update card, add funds)',
+      details: `Customer notified (modeled self-resolution chance: ${Math.round(probability * 100)}%)`,
     },
   });
 
-  console.log(`[NOTIFY] Customer notified for payment ${paymentId}`);
-  return { notified: true };
+  if (success) {
+    await prisma.payment.update({
+      where: { id: paymentId },
+      data: { status: 'RECOVERED', recoveredAt: new Date() },
+    });
+    await prisma.auditLog.create({
+      data: {
+        paymentId,
+        event: 'CUSTOMER_SELF_RESOLVED',
+        details: 'Customer resolved the issue themselves after notification',
+      },
+    });
+  }
+
+  console.log(`[NOTIFY] Payment ${paymentId} — self-resolved: ${success}`);
+  return { notified: true, selfResolved: success, probability };
 }
 
 export async function escalateToHuman(paymentId, reason) {
@@ -70,14 +87,11 @@ export async function escalateToHuman(paymentId, reason) {
   });
 
   await prisma.auditLog.create({
-    data: {
-      paymentId,
-      event: 'ESCALATED',
-      details: reason,
-    },
+    data: { paymentId, event: 'ESCALATED', details: reason },
   });
 
   console.log(`[ESCALATE] Payment ${paymentId} escalated: ${reason}`);
+  return { escalated: true, reason };
 }
 
 export async function stopRecovery(paymentId, reason) {
@@ -87,12 +101,9 @@ export async function stopRecovery(paymentId, reason) {
   });
 
   await prisma.auditLog.create({
-    data: {
-      paymentId,
-      event: 'RECOVERY_STOPPED',
-      details: reason,
-    },
+    data: { paymentId, event: 'RECOVERY_STOPPED', details: reason },
   });
 
   console.log(`[STOP] Recovery stopped for payment ${paymentId}: ${reason}`);
+  return { stopped: true, reason };
 }

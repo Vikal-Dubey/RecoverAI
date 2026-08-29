@@ -6,8 +6,10 @@ import { scheduleRetry, notifyCustomer, escalateToHuman, stopRecovery } from '..
 export async function handlePaymentFailedEvent(webhookPayload) {
   const { payment: paymentData } = webhookPayload.payload;
 
-  // Step 1: Find the payment (in real use, gateway sends payment ID; here we assume it exists in DB)
-  const payment = await prisma.payment.findUnique({ where: { id: paymentData.id } });
+  const payment = await prisma.payment.findUnique({
+    where: { id: paymentData.id },
+    include: { customer: true }, // needed so the dashboard can show who this is
+  });
   if (!payment) throw new Error('Payment not found');
 
   await prisma.agentState.upsert({
@@ -16,7 +18,6 @@ export async function handlePaymentFailedEvent(webhookPayload) {
     update: { currentState: 'ANALYZING' },
   });
 
-  // Step 2: Agent analyzes
   const { proposal } = await analyzePayment(payment.id);
 
   const decision = await prisma.agentDecision.create({
@@ -37,7 +38,6 @@ export async function handlePaymentFailedEvent(webhookPayload) {
     data: { currentState: 'DECISION_MADE' },
   });
 
-  // Step 3: Policy engine checks
   const policyResult = evaluatePolicy(payment, proposal);
 
   for (const check of policyResult.checks) {
@@ -51,26 +51,27 @@ export async function handlePaymentFailedEvent(webhookPayload) {
     data: { currentState: 'POLICY_CHECKED' },
   });
 
-  // Step 4: Execute based on policy-approved action
+  let actionResult = null;
+
   switch (policyResult.action) {
     case 'retry_now':
     case 'retry_delayed':
-      await scheduleRetry(payment.id, decision.id, proposal.retryAfterMinutes || 0);
+      actionResult = await scheduleRetry(payment.id, decision.id, proposal.retryAfterMinutes || 0);
       await prisma.agentState.update({ where: { paymentId: payment.id }, data: { currentState: 'ACTION_SCHEDULED' } });
       break;
     case 'notify_customer':
-      await notifyCustomer(payment.id);
+      actionResult = await notifyCustomer(payment.id, payment.failureReason);
       await prisma.agentState.update({ where: { paymentId: payment.id }, data: { currentState: 'COMPLETED' } });
       break;
     case 'escalate':
-      await escalateToHuman(payment.id, policyResult.reason || 'Policy escalation');
+      actionResult = await escalateToHuman(payment.id, policyResult.reason || 'Policy escalation');
       await prisma.agentState.update({ where: { paymentId: payment.id }, data: { currentState: 'ESCALATED' } });
       break;
     case 'stop':
-      await stopRecovery(payment.id, policyResult.reason || 'Policy stop');
+      actionResult = await stopRecovery(payment.id, policyResult.reason || 'Policy stop');
       await prisma.agentState.update({ where: { paymentId: payment.id }, data: { currentState: 'STOPPED' } });
       break;
   }
 
-  return { payment, decision, policyResult };
+  return { payment, decision, policyResult, actionResult };
 }

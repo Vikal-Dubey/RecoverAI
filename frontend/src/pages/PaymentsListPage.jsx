@@ -1,24 +1,39 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getPayments, simulateFailure } from '../api/payments';
 import StatusBadge from '../components/StatusBadge';
-import { formatINR, formatFailureReason } from '../utils/format';
 import DashboardStats from '../components/DashboardStats';
+import ActivityFeed from '../components/ActivityFeed';
+import { formatINR, formatFailureReason } from '../utils/format';
+import socket from '../api/socket';
+import { useSocketEvent } from '../hooks/useSocketEvent';
+
+const FAILURE_TYPES = [
+  'insufficient_funds',
+  'network_error',
+  'bank_timeout',
+  'temporary_decline',
+  'expired_card',
+  'hard_decline',
+];
 
 const FILTERS = [
-  { label: 'All', value: null },
-  { label: 'Failed', value: 'FAILED' },
-  { label: 'Recovered', value: 'RECOVERED' },
-  { label: 'Escalated', value: 'ESCALATED' },
-  { label: 'Stopped', value: 'STOPPED' },
+  { label: 'All', status: null, notified: false },
+  { label: 'Failed', status: 'FAILED', notified: false },
+  { label: 'Notified', status: 'FAILED', notified: true },
+  { label: 'Recovered', status: 'RECOVERED', notified: false },
+  { label: 'Escalated', status: 'ESCALATED', notified: false },
+  { label: 'Stopped', status: 'STOPPED', notified: false },
 ];
 
 export default function PaymentsListPage() {
   const [payments, setPayments] = useState([]);
-  const [filter, setFilter] = useState(null);
+  const [activeFilter, setActiveFilter] = useState(FILTERS[0]);
+  const [failureType, setFailureType] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [simulating, setSimulating] = useState(false);
+  const [connected, setConnected] = useState(socket.connected);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,7 +43,7 @@ export default function PaymentsListPage() {
       setLoading(true);
       setError(null);
       try {
-        const data = await getPayments(filter);
+        const data = await getPayments({ status: activeFilter.status, notified: activeFilter.notified });
         if (!ignore) setPayments(data);
       } catch (err) {
         if (!ignore) setError(err.message);
@@ -38,32 +53,46 @@ export default function PaymentsListPage() {
     }
 
     load();
-
     return () => {
       ignore = true;
     };
-  }, [filter]);
+  }, [activeFilter]);
 
-  async function reloadPayments() {
+  const reloadPayments = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getPayments(filter);
+      const data = await getPayments({ status: activeFilter.status, notified: activeFilter.notified });
       setPayments(data);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }
+  }, [activeFilter]);
+
+  useSocketEvent('recovery:completed', reloadPayments);
+  useSocketEvent('recovery:decision', reloadPayments);
+
+  useEffect(() => {
+    function onConnect() { setConnected(true); }
+    function onDisconnect() { setConnected(false); }
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+    };
+  }, []);
 
   async function handleSimulate() {
     setSimulating(true);
+    setError(null);
     try {
-      await simulateFailure();
+      await simulateFailure(failureType || undefined);
       await reloadPayments();
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.error || err.message);
     } finally {
       setSimulating(false);
     }
@@ -72,15 +101,16 @@ export default function PaymentsListPage() {
   return (
     <div>
       <DashboardStats />
-      
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex gap-2">
+      <ActivityFeed />
+
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+        <div className="flex gap-2 flex-wrap">
           {FILTERS.map((f) => (
             <button
               key={f.label}
-              onClick={() => setFilter(f.value)}
+              onClick={() => setActiveFilter(f)}
               className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
-                filter === f.value
+                activeFilter.label === f.label
                   ? 'bg-gray-900 text-white'
                   : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
               }`}
@@ -89,13 +119,34 @@ export default function PaymentsListPage() {
             </button>
           ))}
         </div>
-        <button
-          onClick={handleSimulate}
-          disabled={simulating}
-          className="px-4 py-1.5 rounded-md text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50"
-        >
-          {simulating ? 'Simulating…' : 'Simulate Failure'}
-        </button>
+
+        <div className="flex items-center gap-2">
+          <span className="flex items-center gap-1.5 text-xs text-gray-500">
+            <span className={`w-1.5 h-1.5 rounded-full ${connected ? 'bg-green-500' : 'bg-gray-300'}`} />
+            {connected ? 'Live' : 'Offline'}
+          </span>
+
+          <select
+            value={failureType}
+            onChange={(e) => setFailureType(e.target.value)}
+            className="text-sm border border-gray-200 rounded-md px-2 py-1.5 text-gray-700 bg-white"
+          >
+            <option value="">Any failure type</option>
+            {FAILURE_TYPES.map((ft) => (
+              <option key={ft} value={ft}>
+                {formatFailureReason(ft)}
+              </option>
+            ))}
+          </select>
+
+          <button
+            onClick={handleSimulate}
+            disabled={simulating}
+            className="px-4 py-1.5 rounded-md text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50"
+          >
+            {simulating ? 'Simulating…' : 'Simulate Failure'}
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -115,6 +166,7 @@ export default function PaymentsListPage() {
                 <th className="text-left px-4 py-2.5">Amount</th>
                 <th className="text-left px-4 py-2.5">Failure Reason</th>
                 <th className="text-left px-4 py-2.5">Status</th>
+                <th className="text-left px-4 py-2.5">Notified</th>
                 <th className="text-left px-4 py-2.5">AI Action</th>
                 <th className="text-left px-4 py-2.5">Confidence</th>
               </tr>
@@ -130,11 +182,18 @@ export default function PaymentsListPage() {
                   >
                     <td className="px-4 py-3">{p.customer.name}</td>
                     <td className="px-4 py-3">{formatINR(p.amount)}</td>
-                    <td className="px-4 py-3 text-gray-600">
-                      {formatFailureReason(p.failureReason)}
-                    </td>
+                    <td className="px-4 py-3 text-gray-600">{formatFailureReason(p.failureReason)}</td>
                     <td className="px-4 py-3">
                       <StatusBadge status={p.status} />
+                    </td>
+                    <td className="px-4 py-3">
+                      {p.notificationCount > 0 ? (
+                        <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                          {p.notificationCount}x sent
+                        </span>
+                      ) : (
+                        <span className="text-gray-300 text-xs">—</span>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-gray-600">
                       {latest ? formatFailureReason(latest.strategy) : '—'}

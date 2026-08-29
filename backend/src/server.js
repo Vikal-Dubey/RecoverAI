@@ -38,10 +38,24 @@ app.post('/webhooks/payment-failed', async (req, res) => {
 // --- Dev/demo trigger: builds a gateway-shaped event internally ---
 app.post('/payments/simulate-failure', async (req, res) => {
   try {
+    const { failureReason } = req.body || {};
+
     const payment = await withRetry(() =>
-      prisma.payment.findFirst({ where: { status: 'FAILED' } })
+      prisma.payment.findFirst({
+        where: {
+          status: 'FAILED',
+          ...(failureReason ? { failureReason } : {}),
+        },
+      })
     );
-    if (!payment) return res.status(404).json({ error: 'No failed payments available. Run seed first.' });
+
+    if (!payment) {
+      return res.status(404).json({
+        error: failureReason
+          ? `No FAILED payments with reason "${failureReason}" available.`
+          : 'No failed payments available. Run seed first.',
+      });
+    }
 
     const webhookPayload = {
       event: 'payment.failed',
@@ -119,20 +133,18 @@ app.get('/payments/failed', async (req, res) => {
 
 // --- List payments (for dashboard table), optionally filtered by status ---
 app.get('/payments', async (req, res) => {
-  const { status } = req.query; // FAILED | RECOVERING | RECOVERED | ESCALATED | STOPPED
+  const { status, notified } = req.query;
   try {
     const payments = await withRetry(() =>
       prisma.payment.findMany({
         where: {
           experimentBatchId: null,
           ...(status ? { status } : {}),
+          ...(notified === 'true' ? { notificationCount: { gt: 0 } } : {}),
         },
         include: {
           customer: true,
-          agentDecisions: {
-            orderBy: { createdAt: 'desc' },
-            take: 1,
-          },
+          agentDecisions: { orderBy: { createdAt: 'desc' }, take: 1 },
         },
         orderBy: { createdAt: 'desc' },
         take: 50,

@@ -1,7 +1,10 @@
 import client from './client';
 
-export async function getPayments(status) {
-  const res = await client.get('/payments', { params: status ? { status } : {} });
+export async function getPayments({ status, notified } = {}) {
+  const params = {};
+  if (status) params.status = status;
+  if (notified) params.notified = 'true';
+  const res = await client.get('/payments', { params });
   return res.data;
 }
 
@@ -10,8 +13,8 @@ export async function getPaymentDetail(id) {
   return res.data;
 }
 
-export async function simulateFailure() {
-  const res = await client.post('/payments/simulate-failure');
+export async function simulateFailure(failureReason) {
+  const res = await client.post('/payments/simulate-failure', failureReason ? { failureReason } : {});
   return res.data;
 }
 
