@@ -57,6 +57,7 @@ model AgentDecision {
   retryAfterMinutes      Int?
   confidence             Float
   reasoning              String
+  customerMessage        String?           // NEW — Hinglish message for customer-facing actions
   createdAt              DateTime          @default(now())
   alternativesConsidered Json?
   payment                Payment           @relation(fields: [paymentId], references: [id])

@@ -216,6 +216,27 @@ app.get('/dashboard/stats', async (req, res) => {
   }
 });
 
+let latestExperimentResult = null;
+
+app.post('/experiments/run', async (req, res) => {
+  try {
+    const sampleSize = req.body?.sampleSize || 40;
+    const result = await runExperiment(sampleSize);
+    latestExperimentResult = result;
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/experiments/latest', (req, res) => {
+  if (!latestExperimentResult) {
+    return res.status(404).json({ error: 'No experiment has been run yet.' });
+  }
+  res.json(latestExperimentResult);
+});
+
 io.on('connection', (socket) => {
   console.log('Dashboard connected:', socket.id);
   socket.on('disconnect', () => console.log('Dashboard disconnected:', socket.id));

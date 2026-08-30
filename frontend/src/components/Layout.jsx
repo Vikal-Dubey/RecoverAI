@@ -8,7 +8,10 @@ export default function Layout({ children }) {
           <Link to="/" className="text-xl font-semibold text-gray-900">
             RecoverAI
           </Link>
-          <span className="text-sm text-gray-500">Recovery Inbox</span>
+          <nav className="flex gap-4 text-sm">
+            <Link to="/" className="text-gray-600 hover:text-gray-900">Inbox</Link>
+            <Link to="/experiments" className="text-gray-600 hover:text-gray-900">Experiment Results</Link>
+          </nav>
         </div>
       </header>
       <main className="max-w-6xl mx-auto px-6 py-6">{children}</main>

@@ -8,6 +8,7 @@ import Timeline from '../components/Timeline';
 import Card from '../components/Card';
 import { formatINR, formatFailureReason } from '../utils/format';
 import { useSocketEvent } from '../hooks/useSocketEvent';
+import CustomerRiskPanel from '../components/CustomerRiskPanel';
 
 export default function PaymentDetailPage() {
   const { id } = useParams();
@@ -56,7 +57,18 @@ export default function PaymentDetailPage() {
   useSocketEvent('recovery:completed', handleRealtimeUpdate);
   useSocketEvent('recovery:decision', handleRealtimeUpdate);
 
-  if (loading) return <div className="text-gray-400 text-sm py-8 text-center">Loading…</div>;
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <div className="h-4 w-24 bg-gray-100 rounded animate-pulse" />
+        <div className="h-28 bg-white rounded-lg border border-gray-200 animate-pulse" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="h-64 bg-white rounded-lg border border-gray-200 animate-pulse" />
+          <div className="h-64 bg-white rounded-lg border border-gray-200 animate-pulse" />
+        </div>
+      </div>
+    );
+  }
   if (error) return <div className="text-red-600 text-sm py-8 text-center">{error}</div>;
   if (!payment) return null;
 
@@ -95,6 +107,7 @@ export default function PaymentDetailPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <DiagnosisPanel decision={latestDecision} />
         <PolicyChecksPanel checks={latestDecision?.policyChecks} />
+        <CustomerRiskPanel customer={payment.customer} />
       </div>
 
       <Timeline payment={payment} />

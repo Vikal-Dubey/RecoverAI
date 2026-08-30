@@ -47,13 +47,13 @@ export type PaymentMinAggregateOutputType = {
   failureReason: string | null
   method: string | null
   retryCount: number | null
-  notificationCount: number | null
-  lastNotifiedAt: Date | null
-  lastRetryAt: Date | null
-  experimentBatchId: string | null
-  experimentArm: string | null
   createdAt: Date | null
   recoveredAt: Date | null
+  lastNotifiedAt: Date | null
+  lastRetryAt: Date | null
+  notificationCount: number | null
+  experimentArm: string | null
+  experimentBatchId: string | null
 }
 
 export type PaymentMaxAggregateOutputType = {
@@ -65,13 +65,13 @@ export type PaymentMaxAggregateOutputType = {
   failureReason: string | null
   method: string | null
   retryCount: number | null
-  notificationCount: number | null
-  lastNotifiedAt: Date | null
-  lastRetryAt: Date | null
-  experimentBatchId: string | null
-  experimentArm: string | null
   createdAt: Date | null
   recoveredAt: Date | null
+  lastNotifiedAt: Date | null
+  lastRetryAt: Date | null
+  notificationCount: number | null
+  experimentArm: string | null
+  experimentBatchId: string | null
 }
 
 export type PaymentCountAggregateOutputType = {
@@ -83,13 +83,13 @@ export type PaymentCountAggregateOutputType = {
   failureReason: number
   method: number
   retryCount: number
-  notificationCount: number
-  lastNotifiedAt: number
-  lastRetryAt: number
-  experimentBatchId: number
-  experimentArm: number
   createdAt: number
   recoveredAt: number
+  lastNotifiedAt: number
+  lastRetryAt: number
+  notificationCount: number
+  experimentArm: number
+  experimentBatchId: number
   _all: number
 }
 
@@ -115,13 +115,13 @@ export type PaymentMinAggregateInputType = {
   failureReason?: true
   method?: true
   retryCount?: true
-  notificationCount?: true
-  lastNotifiedAt?: true
-  lastRetryAt?: true
-  experimentBatchId?: true
-  experimentArm?: true
   createdAt?: true
   recoveredAt?: true
+  lastNotifiedAt?: true
+  lastRetryAt?: true
+  notificationCount?: true
+  experimentArm?: true
+  experimentBatchId?: true
 }
 
 export type PaymentMaxAggregateInputType = {
@@ -133,13 +133,13 @@ export type PaymentMaxAggregateInputType = {
   failureReason?: true
   method?: true
   retryCount?: true
-  notificationCount?: true
-  lastNotifiedAt?: true
-  lastRetryAt?: true
-  experimentBatchId?: true
-  experimentArm?: true
   createdAt?: true
   recoveredAt?: true
+  lastNotifiedAt?: true
+  lastRetryAt?: true
+  notificationCount?: true
+  experimentArm?: true
+  experimentBatchId?: true
 }
 
 export type PaymentCountAggregateInputType = {
@@ -151,13 +151,13 @@ export type PaymentCountAggregateInputType = {
   failureReason?: true
   method?: true
   retryCount?: true
-  notificationCount?: true
-  lastNotifiedAt?: true
-  lastRetryAt?: true
-  experimentBatchId?: true
-  experimentArm?: true
   createdAt?: true
   recoveredAt?: true
+  lastNotifiedAt?: true
+  lastRetryAt?: true
+  notificationCount?: true
+  experimentArm?: true
+  experimentBatchId?: true
   _all?: true
 }
 
@@ -256,13 +256,13 @@ export type PaymentGroupByOutputType = {
   failureReason: string
   method: string
   retryCount: number
-  notificationCount: number
-  lastNotifiedAt: Date | null
-  lastRetryAt: Date | null
-  experimentBatchId: string | null
-  experimentArm: string | null
   createdAt: Date
   recoveredAt: Date | null
+  lastNotifiedAt: Date | null
+  lastRetryAt: Date | null
+  notificationCount: number
+  experimentArm: string | null
+  experimentBatchId: string | null
   _count: PaymentCountAggregateOutputType | null
   _avg: PaymentAvgAggregateOutputType | null
   _sum: PaymentSumAggregateOutputType | null
@@ -297,18 +297,18 @@ export type PaymentWhereInput = {
   failureReason?: Prisma.StringFilter<"Payment"> | string
   method?: Prisma.StringFilter<"Payment"> | string
   retryCount?: Prisma.IntFilter<"Payment"> | number
-  notificationCount?: Prisma.IntFilter<"Payment"> | number
-  lastNotifiedAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
-  lastRetryAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
-  experimentBatchId?: Prisma.StringNullableFilter<"Payment"> | string | null
-  experimentArm?: Prisma.StringNullableFilter<"Payment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
   recoveredAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
-  customer?: Prisma.XOR<Prisma.CustomerScalarRelationFilter, Prisma.CustomerWhereInput>
+  lastNotifiedAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
+  lastRetryAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
+  notificationCount?: Prisma.IntFilter<"Payment"> | number
+  experimentArm?: Prisma.StringNullableFilter<"Payment"> | string | null
+  experimentBatchId?: Prisma.StringNullableFilter<"Payment"> | string | null
   agentDecisions?: Prisma.AgentDecisionListRelationFilter
-  recoveryAttempts?: Prisma.RecoveryAttemptListRelationFilter
   agentState?: Prisma.XOR<Prisma.AgentStateNullableScalarRelationFilter, Prisma.AgentStateWhereInput> | null
   auditLogs?: Prisma.AuditLogListRelationFilter
+  customer?: Prisma.XOR<Prisma.CustomerScalarRelationFilter, Prisma.CustomerWhereInput>
+  recoveryAttempts?: Prisma.RecoveryAttemptListRelationFilter
 }
 
 export type PaymentOrderByWithRelationInput = {
@@ -320,18 +320,18 @@ export type PaymentOrderByWithRelationInput = {
   failureReason?: Prisma.SortOrder
   method?: Prisma.SortOrder
   retryCount?: Prisma.SortOrder
-  notificationCount?: Prisma.SortOrder
-  lastNotifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  lastRetryAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  experimentBatchId?: Prisma.SortOrderInput | Prisma.SortOrder
-  experimentArm?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   recoveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  customer?: Prisma.CustomerOrderByWithRelationInput
+  lastNotifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastRetryAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  notificationCount?: Prisma.SortOrder
+  experimentArm?: Prisma.SortOrderInput | Prisma.SortOrder
+  experimentBatchId?: Prisma.SortOrderInput | Prisma.SortOrder
   agentDecisions?: Prisma.AgentDecisionOrderByRelationAggregateInput
-  recoveryAttempts?: Prisma.RecoveryAttemptOrderByRelationAggregateInput
   agentState?: Prisma.AgentStateOrderByWithRelationInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
+  customer?: Prisma.CustomerOrderByWithRelationInput
+  recoveryAttempts?: Prisma.RecoveryAttemptOrderByRelationAggregateInput
 }
 
 export type PaymentWhereUniqueInput = Prisma.AtLeast<{
@@ -346,18 +346,18 @@ export type PaymentWhereUniqueInput = Prisma.AtLeast<{
   failureReason?: Prisma.StringFilter<"Payment"> | string
   method?: Prisma.StringFilter<"Payment"> | string
   retryCount?: Prisma.IntFilter<"Payment"> | number
-  notificationCount?: Prisma.IntFilter<"Payment"> | number
-  lastNotifiedAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
-  lastRetryAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
-  experimentBatchId?: Prisma.StringNullableFilter<"Payment"> | string | null
-  experimentArm?: Prisma.StringNullableFilter<"Payment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
   recoveredAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
-  customer?: Prisma.XOR<Prisma.CustomerScalarRelationFilter, Prisma.CustomerWhereInput>
+  lastNotifiedAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
+  lastRetryAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
+  notificationCount?: Prisma.IntFilter<"Payment"> | number
+  experimentArm?: Prisma.StringNullableFilter<"Payment"> | string | null
+  experimentBatchId?: Prisma.StringNullableFilter<"Payment"> | string | null
   agentDecisions?: Prisma.AgentDecisionListRelationFilter
-  recoveryAttempts?: Prisma.RecoveryAttemptListRelationFilter
   agentState?: Prisma.XOR<Prisma.AgentStateNullableScalarRelationFilter, Prisma.AgentStateWhereInput> | null
   auditLogs?: Prisma.AuditLogListRelationFilter
+  customer?: Prisma.XOR<Prisma.CustomerScalarRelationFilter, Prisma.CustomerWhereInput>
+  recoveryAttempts?: Prisma.RecoveryAttemptListRelationFilter
 }, "id">
 
 export type PaymentOrderByWithAggregationInput = {
@@ -369,13 +369,13 @@ export type PaymentOrderByWithAggregationInput = {
   failureReason?: Prisma.SortOrder
   method?: Prisma.SortOrder
   retryCount?: Prisma.SortOrder
-  notificationCount?: Prisma.SortOrder
-  lastNotifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  lastRetryAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  experimentBatchId?: Prisma.SortOrderInput | Prisma.SortOrder
-  experimentArm?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   recoveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastNotifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastRetryAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  notificationCount?: Prisma.SortOrder
+  experimentArm?: Prisma.SortOrderInput | Prisma.SortOrder
+  experimentBatchId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.PaymentCountOrderByAggregateInput
   _avg?: Prisma.PaymentAvgOrderByAggregateInput
   _max?: Prisma.PaymentMaxOrderByAggregateInput
@@ -395,13 +395,13 @@ export type PaymentScalarWhereWithAggregatesInput = {
   failureReason?: Prisma.StringWithAggregatesFilter<"Payment"> | string
   method?: Prisma.StringWithAggregatesFilter<"Payment"> | string
   retryCount?: Prisma.IntWithAggregatesFilter<"Payment"> | number
-  notificationCount?: Prisma.IntWithAggregatesFilter<"Payment"> | number
-  lastNotifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Payment"> | Date | string | null
-  lastRetryAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Payment"> | Date | string | null
-  experimentBatchId?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
-  experimentArm?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Payment"> | Date | string
   recoveredAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Payment"> | Date | string | null
+  lastNotifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Payment"> | Date | string | null
+  lastRetryAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Payment"> | Date | string | null
+  notificationCount?: Prisma.IntWithAggregatesFilter<"Payment"> | number
+  experimentArm?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
+  experimentBatchId?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
 }
 
 export type PaymentCreateInput = {
@@ -412,18 +412,18 @@ export type PaymentCreateInput = {
   failureReason: string
   method: string
   retryCount?: number
-  notificationCount?: number
-  lastNotifiedAt?: Date | string | null
-  lastRetryAt?: Date | string | null
-  experimentBatchId?: string | null
-  experimentArm?: string | null
   createdAt?: Date | string
   recoveredAt?: Date | string | null
-  customer: Prisma.CustomerCreateNestedOneWithoutPaymentsInput
+  lastNotifiedAt?: Date | string | null
+  lastRetryAt?: Date | string | null
+  notificationCount?: number
+  experimentArm?: string | null
+  experimentBatchId?: string | null
   agentDecisions?: Prisma.AgentDecisionCreateNestedManyWithoutPaymentInput
-  recoveryAttempts?: Prisma.RecoveryAttemptCreateNestedManyWithoutPaymentInput
   agentState?: Prisma.AgentStateCreateNestedOneWithoutPaymentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutPaymentInput
+  customer: Prisma.CustomerCreateNestedOneWithoutPaymentsInput
+  recoveryAttempts?: Prisma.RecoveryAttemptCreateNestedManyWithoutPaymentInput
 }
 
 export type PaymentUncheckedCreateInput = {
@@ -435,17 +435,17 @@ export type PaymentUncheckedCreateInput = {
   failureReason: string
   method: string
   retryCount?: number
-  notificationCount?: number
-  lastNotifiedAt?: Date | string | null
-  lastRetryAt?: Date | string | null
-  experimentBatchId?: string | null
-  experimentArm?: string | null
   createdAt?: Date | string
   recoveredAt?: Date | string | null
+  lastNotifiedAt?: Date | string | null
+  lastRetryAt?: Date | string | null
+  notificationCount?: number
+  experimentArm?: string | null
+  experimentBatchId?: string | null
   agentDecisions?: Prisma.AgentDecisionUncheckedCreateNestedManyWithoutPaymentInput
-  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedCreateNestedManyWithoutPaymentInput
   agentState?: Prisma.AgentStateUncheckedCreateNestedOneWithoutPaymentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutPaymentInput
+  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedCreateNestedManyWithoutPaymentInput
 }
 
 export type PaymentUpdateInput = {
@@ -456,18 +456,18 @@ export type PaymentUpdateInput = {
   failureReason?: Prisma.StringFieldUpdateOperationsInput | string
   method?: Prisma.StringFieldUpdateOperationsInput | string
   retryCount?: Prisma.IntFieldUpdateOperationsInput | number
-  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
-  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recoveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  customer?: Prisma.CustomerUpdateOneRequiredWithoutPaymentsNestedInput
+  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentDecisions?: Prisma.AgentDecisionUpdateManyWithoutPaymentNestedInput
-  recoveryAttempts?: Prisma.RecoveryAttemptUpdateManyWithoutPaymentNestedInput
   agentState?: Prisma.AgentStateUpdateOneWithoutPaymentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutPaymentNestedInput
+  customer?: Prisma.CustomerUpdateOneRequiredWithoutPaymentsNestedInput
+  recoveryAttempts?: Prisma.RecoveryAttemptUpdateManyWithoutPaymentNestedInput
 }
 
 export type PaymentUncheckedUpdateInput = {
@@ -479,17 +479,17 @@ export type PaymentUncheckedUpdateInput = {
   failureReason?: Prisma.StringFieldUpdateOperationsInput | string
   method?: Prisma.StringFieldUpdateOperationsInput | string
   retryCount?: Prisma.IntFieldUpdateOperationsInput | number
-  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
-  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recoveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentDecisions?: Prisma.AgentDecisionUncheckedUpdateManyWithoutPaymentNestedInput
-  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedUpdateManyWithoutPaymentNestedInput
   agentState?: Prisma.AgentStateUncheckedUpdateOneWithoutPaymentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutPaymentNestedInput
+  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedUpdateManyWithoutPaymentNestedInput
 }
 
 export type PaymentCreateManyInput = {
@@ -501,13 +501,13 @@ export type PaymentCreateManyInput = {
   failureReason: string
   method: string
   retryCount?: number
-  notificationCount?: number
-  lastNotifiedAt?: Date | string | null
-  lastRetryAt?: Date | string | null
-  experimentBatchId?: string | null
-  experimentArm?: string | null
   createdAt?: Date | string
   recoveredAt?: Date | string | null
+  lastNotifiedAt?: Date | string | null
+  lastRetryAt?: Date | string | null
+  notificationCount?: number
+  experimentArm?: string | null
+  experimentBatchId?: string | null
 }
 
 export type PaymentUpdateManyMutationInput = {
@@ -518,13 +518,13 @@ export type PaymentUpdateManyMutationInput = {
   failureReason?: Prisma.StringFieldUpdateOperationsInput | string
   method?: Prisma.StringFieldUpdateOperationsInput | string
   retryCount?: Prisma.IntFieldUpdateOperationsInput | number
-  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
-  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recoveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type PaymentUncheckedUpdateManyInput = {
@@ -536,13 +536,13 @@ export type PaymentUncheckedUpdateManyInput = {
   failureReason?: Prisma.StringFieldUpdateOperationsInput | string
   method?: Prisma.StringFieldUpdateOperationsInput | string
   retryCount?: Prisma.IntFieldUpdateOperationsInput | number
-  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
-  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recoveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type PaymentListRelationFilter = {
@@ -564,13 +564,13 @@ export type PaymentCountOrderByAggregateInput = {
   failureReason?: Prisma.SortOrder
   method?: Prisma.SortOrder
   retryCount?: Prisma.SortOrder
-  notificationCount?: Prisma.SortOrder
-  lastNotifiedAt?: Prisma.SortOrder
-  lastRetryAt?: Prisma.SortOrder
-  experimentBatchId?: Prisma.SortOrder
-  experimentArm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   recoveredAt?: Prisma.SortOrder
+  lastNotifiedAt?: Prisma.SortOrder
+  lastRetryAt?: Prisma.SortOrder
+  notificationCount?: Prisma.SortOrder
+  experimentArm?: Prisma.SortOrder
+  experimentBatchId?: Prisma.SortOrder
 }
 
 export type PaymentAvgOrderByAggregateInput = {
@@ -588,13 +588,13 @@ export type PaymentMaxOrderByAggregateInput = {
   failureReason?: Prisma.SortOrder
   method?: Prisma.SortOrder
   retryCount?: Prisma.SortOrder
-  notificationCount?: Prisma.SortOrder
-  lastNotifiedAt?: Prisma.SortOrder
-  lastRetryAt?: Prisma.SortOrder
-  experimentBatchId?: Prisma.SortOrder
-  experimentArm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   recoveredAt?: Prisma.SortOrder
+  lastNotifiedAt?: Prisma.SortOrder
+  lastRetryAt?: Prisma.SortOrder
+  notificationCount?: Prisma.SortOrder
+  experimentArm?: Prisma.SortOrder
+  experimentBatchId?: Prisma.SortOrder
 }
 
 export type PaymentMinOrderByAggregateInput = {
@@ -606,13 +606,13 @@ export type PaymentMinOrderByAggregateInput = {
   failureReason?: Prisma.SortOrder
   method?: Prisma.SortOrder
   retryCount?: Prisma.SortOrder
-  notificationCount?: Prisma.SortOrder
-  lastNotifiedAt?: Prisma.SortOrder
-  lastRetryAt?: Prisma.SortOrder
-  experimentBatchId?: Prisma.SortOrder
-  experimentArm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   recoveredAt?: Prisma.SortOrder
+  lastNotifiedAt?: Prisma.SortOrder
+  lastRetryAt?: Prisma.SortOrder
+  notificationCount?: Prisma.SortOrder
+  experimentArm?: Prisma.SortOrder
+  experimentBatchId?: Prisma.SortOrder
 }
 
 export type PaymentSumOrderByAggregateInput = {
@@ -744,17 +744,17 @@ export type PaymentCreateWithoutCustomerInput = {
   failureReason: string
   method: string
   retryCount?: number
-  notificationCount?: number
-  lastNotifiedAt?: Date | string | null
-  lastRetryAt?: Date | string | null
-  experimentBatchId?: string | null
-  experimentArm?: string | null
   createdAt?: Date | string
   recoveredAt?: Date | string | null
+  lastNotifiedAt?: Date | string | null
+  lastRetryAt?: Date | string | null
+  notificationCount?: number
+  experimentArm?: string | null
+  experimentBatchId?: string | null
   agentDecisions?: Prisma.AgentDecisionCreateNestedManyWithoutPaymentInput
-  recoveryAttempts?: Prisma.RecoveryAttemptCreateNestedManyWithoutPaymentInput
   agentState?: Prisma.AgentStateCreateNestedOneWithoutPaymentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutPaymentInput
+  recoveryAttempts?: Prisma.RecoveryAttemptCreateNestedManyWithoutPaymentInput
 }
 
 export type PaymentUncheckedCreateWithoutCustomerInput = {
@@ -765,17 +765,17 @@ export type PaymentUncheckedCreateWithoutCustomerInput = {
   failureReason: string
   method: string
   retryCount?: number
-  notificationCount?: number
-  lastNotifiedAt?: Date | string | null
-  lastRetryAt?: Date | string | null
-  experimentBatchId?: string | null
-  experimentArm?: string | null
   createdAt?: Date | string
   recoveredAt?: Date | string | null
+  lastNotifiedAt?: Date | string | null
+  lastRetryAt?: Date | string | null
+  notificationCount?: number
+  experimentArm?: string | null
+  experimentBatchId?: string | null
   agentDecisions?: Prisma.AgentDecisionUncheckedCreateNestedManyWithoutPaymentInput
-  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedCreateNestedManyWithoutPaymentInput
   agentState?: Prisma.AgentStateUncheckedCreateNestedOneWithoutPaymentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutPaymentInput
+  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedCreateNestedManyWithoutPaymentInput
 }
 
 export type PaymentCreateOrConnectWithoutCustomerInput = {
@@ -816,13 +816,13 @@ export type PaymentScalarWhereInput = {
   failureReason?: Prisma.StringFilter<"Payment"> | string
   method?: Prisma.StringFilter<"Payment"> | string
   retryCount?: Prisma.IntFilter<"Payment"> | number
-  notificationCount?: Prisma.IntFilter<"Payment"> | number
-  lastNotifiedAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
-  lastRetryAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
-  experimentBatchId?: Prisma.StringNullableFilter<"Payment"> | string | null
-  experimentArm?: Prisma.StringNullableFilter<"Payment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
   recoveredAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
+  lastNotifiedAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
+  lastRetryAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
+  notificationCount?: Prisma.IntFilter<"Payment"> | number
+  experimentArm?: Prisma.StringNullableFilter<"Payment"> | string | null
+  experimentBatchId?: Prisma.StringNullableFilter<"Payment"> | string | null
 }
 
 export type PaymentCreateWithoutAgentDecisionsInput = {
@@ -833,17 +833,17 @@ export type PaymentCreateWithoutAgentDecisionsInput = {
   failureReason: string
   method: string
   retryCount?: number
-  notificationCount?: number
-  lastNotifiedAt?: Date | string | null
-  lastRetryAt?: Date | string | null
-  experimentBatchId?: string | null
-  experimentArm?: string | null
   createdAt?: Date | string
   recoveredAt?: Date | string | null
-  customer: Prisma.CustomerCreateNestedOneWithoutPaymentsInput
-  recoveryAttempts?: Prisma.RecoveryAttemptCreateNestedManyWithoutPaymentInput
+  lastNotifiedAt?: Date | string | null
+  lastRetryAt?: Date | string | null
+  notificationCount?: number
+  experimentArm?: string | null
+  experimentBatchId?: string | null
   agentState?: Prisma.AgentStateCreateNestedOneWithoutPaymentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutPaymentInput
+  customer: Prisma.CustomerCreateNestedOneWithoutPaymentsInput
+  recoveryAttempts?: Prisma.RecoveryAttemptCreateNestedManyWithoutPaymentInput
 }
 
 export type PaymentUncheckedCreateWithoutAgentDecisionsInput = {
@@ -855,16 +855,16 @@ export type PaymentUncheckedCreateWithoutAgentDecisionsInput = {
   failureReason: string
   method: string
   retryCount?: number
-  notificationCount?: number
-  lastNotifiedAt?: Date | string | null
-  lastRetryAt?: Date | string | null
-  experimentBatchId?: string | null
-  experimentArm?: string | null
   createdAt?: Date | string
   recoveredAt?: Date | string | null
-  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedCreateNestedManyWithoutPaymentInput
+  lastNotifiedAt?: Date | string | null
+  lastRetryAt?: Date | string | null
+  notificationCount?: number
+  experimentArm?: string | null
+  experimentBatchId?: string | null
   agentState?: Prisma.AgentStateUncheckedCreateNestedOneWithoutPaymentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutPaymentInput
+  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedCreateNestedManyWithoutPaymentInput
 }
 
 export type PaymentCreateOrConnectWithoutAgentDecisionsInput = {
@@ -891,17 +891,17 @@ export type PaymentUpdateWithoutAgentDecisionsInput = {
   failureReason?: Prisma.StringFieldUpdateOperationsInput | string
   method?: Prisma.StringFieldUpdateOperationsInput | string
   retryCount?: Prisma.IntFieldUpdateOperationsInput | number
-  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
-  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recoveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  customer?: Prisma.CustomerUpdateOneRequiredWithoutPaymentsNestedInput
-  recoveryAttempts?: Prisma.RecoveryAttemptUpdateManyWithoutPaymentNestedInput
+  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentState?: Prisma.AgentStateUpdateOneWithoutPaymentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutPaymentNestedInput
+  customer?: Prisma.CustomerUpdateOneRequiredWithoutPaymentsNestedInput
+  recoveryAttempts?: Prisma.RecoveryAttemptUpdateManyWithoutPaymentNestedInput
 }
 
 export type PaymentUncheckedUpdateWithoutAgentDecisionsInput = {
@@ -913,16 +913,16 @@ export type PaymentUncheckedUpdateWithoutAgentDecisionsInput = {
   failureReason?: Prisma.StringFieldUpdateOperationsInput | string
   method?: Prisma.StringFieldUpdateOperationsInput | string
   retryCount?: Prisma.IntFieldUpdateOperationsInput | number
-  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
-  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recoveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedUpdateManyWithoutPaymentNestedInput
+  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentState?: Prisma.AgentStateUncheckedUpdateOneWithoutPaymentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutPaymentNestedInput
+  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedUpdateManyWithoutPaymentNestedInput
 }
 
 export type PaymentCreateWithoutRecoveryAttemptsInput = {
@@ -933,17 +933,17 @@ export type PaymentCreateWithoutRecoveryAttemptsInput = {
   failureReason: string
   method: string
   retryCount?: number
-  notificationCount?: number
-  lastNotifiedAt?: Date | string | null
-  lastRetryAt?: Date | string | null
-  experimentBatchId?: string | null
-  experimentArm?: string | null
   createdAt?: Date | string
   recoveredAt?: Date | string | null
-  customer: Prisma.CustomerCreateNestedOneWithoutPaymentsInput
+  lastNotifiedAt?: Date | string | null
+  lastRetryAt?: Date | string | null
+  notificationCount?: number
+  experimentArm?: string | null
+  experimentBatchId?: string | null
   agentDecisions?: Prisma.AgentDecisionCreateNestedManyWithoutPaymentInput
   agentState?: Prisma.AgentStateCreateNestedOneWithoutPaymentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutPaymentInput
+  customer: Prisma.CustomerCreateNestedOneWithoutPaymentsInput
 }
 
 export type PaymentUncheckedCreateWithoutRecoveryAttemptsInput = {
@@ -955,13 +955,13 @@ export type PaymentUncheckedCreateWithoutRecoveryAttemptsInput = {
   failureReason: string
   method: string
   retryCount?: number
-  notificationCount?: number
-  lastNotifiedAt?: Date | string | null
-  lastRetryAt?: Date | string | null
-  experimentBatchId?: string | null
-  experimentArm?: string | null
   createdAt?: Date | string
   recoveredAt?: Date | string | null
+  lastNotifiedAt?: Date | string | null
+  lastRetryAt?: Date | string | null
+  notificationCount?: number
+  experimentArm?: string | null
+  experimentBatchId?: string | null
   agentDecisions?: Prisma.AgentDecisionUncheckedCreateNestedManyWithoutPaymentInput
   agentState?: Prisma.AgentStateUncheckedCreateNestedOneWithoutPaymentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutPaymentInput
@@ -991,17 +991,17 @@ export type PaymentUpdateWithoutRecoveryAttemptsInput = {
   failureReason?: Prisma.StringFieldUpdateOperationsInput | string
   method?: Prisma.StringFieldUpdateOperationsInput | string
   retryCount?: Prisma.IntFieldUpdateOperationsInput | number
-  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
-  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recoveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  customer?: Prisma.CustomerUpdateOneRequiredWithoutPaymentsNestedInput
+  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentDecisions?: Prisma.AgentDecisionUpdateManyWithoutPaymentNestedInput
   agentState?: Prisma.AgentStateUpdateOneWithoutPaymentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutPaymentNestedInput
+  customer?: Prisma.CustomerUpdateOneRequiredWithoutPaymentsNestedInput
 }
 
 export type PaymentUncheckedUpdateWithoutRecoveryAttemptsInput = {
@@ -1013,13 +1013,13 @@ export type PaymentUncheckedUpdateWithoutRecoveryAttemptsInput = {
   failureReason?: Prisma.StringFieldUpdateOperationsInput | string
   method?: Prisma.StringFieldUpdateOperationsInput | string
   retryCount?: Prisma.IntFieldUpdateOperationsInput | number
-  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
-  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recoveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentDecisions?: Prisma.AgentDecisionUncheckedUpdateManyWithoutPaymentNestedInput
   agentState?: Prisma.AgentStateUncheckedUpdateOneWithoutPaymentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutPaymentNestedInput
@@ -1033,17 +1033,17 @@ export type PaymentCreateWithoutAgentStateInput = {
   failureReason: string
   method: string
   retryCount?: number
-  notificationCount?: number
-  lastNotifiedAt?: Date | string | null
-  lastRetryAt?: Date | string | null
-  experimentBatchId?: string | null
-  experimentArm?: string | null
   createdAt?: Date | string
   recoveredAt?: Date | string | null
-  customer: Prisma.CustomerCreateNestedOneWithoutPaymentsInput
+  lastNotifiedAt?: Date | string | null
+  lastRetryAt?: Date | string | null
+  notificationCount?: number
+  experimentArm?: string | null
+  experimentBatchId?: string | null
   agentDecisions?: Prisma.AgentDecisionCreateNestedManyWithoutPaymentInput
-  recoveryAttempts?: Prisma.RecoveryAttemptCreateNestedManyWithoutPaymentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutPaymentInput
+  customer: Prisma.CustomerCreateNestedOneWithoutPaymentsInput
+  recoveryAttempts?: Prisma.RecoveryAttemptCreateNestedManyWithoutPaymentInput
 }
 
 export type PaymentUncheckedCreateWithoutAgentStateInput = {
@@ -1055,16 +1055,16 @@ export type PaymentUncheckedCreateWithoutAgentStateInput = {
   failureReason: string
   method: string
   retryCount?: number
-  notificationCount?: number
-  lastNotifiedAt?: Date | string | null
-  lastRetryAt?: Date | string | null
-  experimentBatchId?: string | null
-  experimentArm?: string | null
   createdAt?: Date | string
   recoveredAt?: Date | string | null
+  lastNotifiedAt?: Date | string | null
+  lastRetryAt?: Date | string | null
+  notificationCount?: number
+  experimentArm?: string | null
+  experimentBatchId?: string | null
   agentDecisions?: Prisma.AgentDecisionUncheckedCreateNestedManyWithoutPaymentInput
-  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedCreateNestedManyWithoutPaymentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutPaymentInput
+  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedCreateNestedManyWithoutPaymentInput
 }
 
 export type PaymentCreateOrConnectWithoutAgentStateInput = {
@@ -1091,17 +1091,17 @@ export type PaymentUpdateWithoutAgentStateInput = {
   failureReason?: Prisma.StringFieldUpdateOperationsInput | string
   method?: Prisma.StringFieldUpdateOperationsInput | string
   retryCount?: Prisma.IntFieldUpdateOperationsInput | number
-  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
-  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recoveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  customer?: Prisma.CustomerUpdateOneRequiredWithoutPaymentsNestedInput
+  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentDecisions?: Prisma.AgentDecisionUpdateManyWithoutPaymentNestedInput
-  recoveryAttempts?: Prisma.RecoveryAttemptUpdateManyWithoutPaymentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutPaymentNestedInput
+  customer?: Prisma.CustomerUpdateOneRequiredWithoutPaymentsNestedInput
+  recoveryAttempts?: Prisma.RecoveryAttemptUpdateManyWithoutPaymentNestedInput
 }
 
 export type PaymentUncheckedUpdateWithoutAgentStateInput = {
@@ -1113,16 +1113,16 @@ export type PaymentUncheckedUpdateWithoutAgentStateInput = {
   failureReason?: Prisma.StringFieldUpdateOperationsInput | string
   method?: Prisma.StringFieldUpdateOperationsInput | string
   retryCount?: Prisma.IntFieldUpdateOperationsInput | number
-  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
-  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recoveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentDecisions?: Prisma.AgentDecisionUncheckedUpdateManyWithoutPaymentNestedInput
-  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedUpdateManyWithoutPaymentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutPaymentNestedInput
+  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedUpdateManyWithoutPaymentNestedInput
 }
 
 export type PaymentCreateWithoutAuditLogsInput = {
@@ -1133,17 +1133,17 @@ export type PaymentCreateWithoutAuditLogsInput = {
   failureReason: string
   method: string
   retryCount?: number
-  notificationCount?: number
-  lastNotifiedAt?: Date | string | null
-  lastRetryAt?: Date | string | null
-  experimentBatchId?: string | null
-  experimentArm?: string | null
   createdAt?: Date | string
   recoveredAt?: Date | string | null
-  customer: Prisma.CustomerCreateNestedOneWithoutPaymentsInput
+  lastNotifiedAt?: Date | string | null
+  lastRetryAt?: Date | string | null
+  notificationCount?: number
+  experimentArm?: string | null
+  experimentBatchId?: string | null
   agentDecisions?: Prisma.AgentDecisionCreateNestedManyWithoutPaymentInput
-  recoveryAttempts?: Prisma.RecoveryAttemptCreateNestedManyWithoutPaymentInput
   agentState?: Prisma.AgentStateCreateNestedOneWithoutPaymentInput
+  customer: Prisma.CustomerCreateNestedOneWithoutPaymentsInput
+  recoveryAttempts?: Prisma.RecoveryAttemptCreateNestedManyWithoutPaymentInput
 }
 
 export type PaymentUncheckedCreateWithoutAuditLogsInput = {
@@ -1155,16 +1155,16 @@ export type PaymentUncheckedCreateWithoutAuditLogsInput = {
   failureReason: string
   method: string
   retryCount?: number
-  notificationCount?: number
-  lastNotifiedAt?: Date | string | null
-  lastRetryAt?: Date | string | null
-  experimentBatchId?: string | null
-  experimentArm?: string | null
   createdAt?: Date | string
   recoveredAt?: Date | string | null
+  lastNotifiedAt?: Date | string | null
+  lastRetryAt?: Date | string | null
+  notificationCount?: number
+  experimentArm?: string | null
+  experimentBatchId?: string | null
   agentDecisions?: Prisma.AgentDecisionUncheckedCreateNestedManyWithoutPaymentInput
-  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedCreateNestedManyWithoutPaymentInput
   agentState?: Prisma.AgentStateUncheckedCreateNestedOneWithoutPaymentInput
+  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedCreateNestedManyWithoutPaymentInput
 }
 
 export type PaymentCreateOrConnectWithoutAuditLogsInput = {
@@ -1191,17 +1191,17 @@ export type PaymentUpdateWithoutAuditLogsInput = {
   failureReason?: Prisma.StringFieldUpdateOperationsInput | string
   method?: Prisma.StringFieldUpdateOperationsInput | string
   retryCount?: Prisma.IntFieldUpdateOperationsInput | number
-  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
-  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recoveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  customer?: Prisma.CustomerUpdateOneRequiredWithoutPaymentsNestedInput
+  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentDecisions?: Prisma.AgentDecisionUpdateManyWithoutPaymentNestedInput
-  recoveryAttempts?: Prisma.RecoveryAttemptUpdateManyWithoutPaymentNestedInput
   agentState?: Prisma.AgentStateUpdateOneWithoutPaymentNestedInput
+  customer?: Prisma.CustomerUpdateOneRequiredWithoutPaymentsNestedInput
+  recoveryAttempts?: Prisma.RecoveryAttemptUpdateManyWithoutPaymentNestedInput
 }
 
 export type PaymentUncheckedUpdateWithoutAuditLogsInput = {
@@ -1213,16 +1213,16 @@ export type PaymentUncheckedUpdateWithoutAuditLogsInput = {
   failureReason?: Prisma.StringFieldUpdateOperationsInput | string
   method?: Prisma.StringFieldUpdateOperationsInput | string
   retryCount?: Prisma.IntFieldUpdateOperationsInput | number
-  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
-  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recoveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentDecisions?: Prisma.AgentDecisionUncheckedUpdateManyWithoutPaymentNestedInput
-  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedUpdateManyWithoutPaymentNestedInput
   agentState?: Prisma.AgentStateUncheckedUpdateOneWithoutPaymentNestedInput
+  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedUpdateManyWithoutPaymentNestedInput
 }
 
 export type PaymentCreateManyCustomerInput = {
@@ -1233,13 +1233,13 @@ export type PaymentCreateManyCustomerInput = {
   failureReason: string
   method: string
   retryCount?: number
-  notificationCount?: number
-  lastNotifiedAt?: Date | string | null
-  lastRetryAt?: Date | string | null
-  experimentBatchId?: string | null
-  experimentArm?: string | null
   createdAt?: Date | string
   recoveredAt?: Date | string | null
+  lastNotifiedAt?: Date | string | null
+  lastRetryAt?: Date | string | null
+  notificationCount?: number
+  experimentArm?: string | null
+  experimentBatchId?: string | null
 }
 
 export type PaymentUpdateWithoutCustomerInput = {
@@ -1250,17 +1250,17 @@ export type PaymentUpdateWithoutCustomerInput = {
   failureReason?: Prisma.StringFieldUpdateOperationsInput | string
   method?: Prisma.StringFieldUpdateOperationsInput | string
   retryCount?: Prisma.IntFieldUpdateOperationsInput | number
-  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
-  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recoveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentDecisions?: Prisma.AgentDecisionUpdateManyWithoutPaymentNestedInput
-  recoveryAttempts?: Prisma.RecoveryAttemptUpdateManyWithoutPaymentNestedInput
   agentState?: Prisma.AgentStateUpdateOneWithoutPaymentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutPaymentNestedInput
+  recoveryAttempts?: Prisma.RecoveryAttemptUpdateManyWithoutPaymentNestedInput
 }
 
 export type PaymentUncheckedUpdateWithoutCustomerInput = {
@@ -1271,17 +1271,17 @@ export type PaymentUncheckedUpdateWithoutCustomerInput = {
   failureReason?: Prisma.StringFieldUpdateOperationsInput | string
   method?: Prisma.StringFieldUpdateOperationsInput | string
   retryCount?: Prisma.IntFieldUpdateOperationsInput | number
-  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
-  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recoveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentDecisions?: Prisma.AgentDecisionUncheckedUpdateManyWithoutPaymentNestedInput
-  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedUpdateManyWithoutPaymentNestedInput
   agentState?: Prisma.AgentStateUncheckedUpdateOneWithoutPaymentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutPaymentNestedInput
+  recoveryAttempts?: Prisma.RecoveryAttemptUncheckedUpdateManyWithoutPaymentNestedInput
 }
 
 export type PaymentUncheckedUpdateManyWithoutCustomerInput = {
@@ -1292,13 +1292,13 @@ export type PaymentUncheckedUpdateManyWithoutCustomerInput = {
   failureReason?: Prisma.StringFieldUpdateOperationsInput | string
   method?: Prisma.StringFieldUpdateOperationsInput | string
   retryCount?: Prisma.IntFieldUpdateOperationsInput | number
-  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
-  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recoveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRetryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notificationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  experimentArm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experimentBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1308,14 +1308,14 @@ export type PaymentUncheckedUpdateManyWithoutCustomerInput = {
 
 export type PaymentCountOutputType = {
   agentDecisions: number
-  recoveryAttempts: number
   auditLogs: number
+  recoveryAttempts: number
 }
 
 export type PaymentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agentDecisions?: boolean | PaymentCountOutputTypeCountAgentDecisionsArgs
-  recoveryAttempts?: boolean | PaymentCountOutputTypeCountRecoveryAttemptsArgs
   auditLogs?: boolean | PaymentCountOutputTypeCountAuditLogsArgs
+  recoveryAttempts?: boolean | PaymentCountOutputTypeCountRecoveryAttemptsArgs
 }
 
 /**
@@ -1338,15 +1338,15 @@ export type PaymentCountOutputTypeCountAgentDecisionsArgs<ExtArgs extends runtim
 /**
  * PaymentCountOutputType without action
  */
-export type PaymentCountOutputTypeCountRecoveryAttemptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.RecoveryAttemptWhereInput
+export type PaymentCountOutputTypeCountAuditLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AuditLogWhereInput
 }
 
 /**
  * PaymentCountOutputType without action
  */
-export type PaymentCountOutputTypeCountAuditLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AuditLogWhereInput
+export type PaymentCountOutputTypeCountRecoveryAttemptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RecoveryAttemptWhereInput
 }
 
 
@@ -1359,18 +1359,18 @@ export type PaymentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   failureReason?: boolean
   method?: boolean
   retryCount?: boolean
-  notificationCount?: boolean
-  lastNotifiedAt?: boolean
-  lastRetryAt?: boolean
-  experimentBatchId?: boolean
-  experimentArm?: boolean
   createdAt?: boolean
   recoveredAt?: boolean
-  customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
+  lastNotifiedAt?: boolean
+  lastRetryAt?: boolean
+  notificationCount?: boolean
+  experimentArm?: boolean
+  experimentBatchId?: boolean
   agentDecisions?: boolean | Prisma.Payment$agentDecisionsArgs<ExtArgs>
-  recoveryAttempts?: boolean | Prisma.Payment$recoveryAttemptsArgs<ExtArgs>
   agentState?: boolean | Prisma.Payment$agentStateArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Payment$auditLogsArgs<ExtArgs>
+  customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
+  recoveryAttempts?: boolean | Prisma.Payment$recoveryAttemptsArgs<ExtArgs>
   _count?: boolean | Prisma.PaymentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["payment"]>
 
@@ -1383,13 +1383,13 @@ export type PaymentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   failureReason?: boolean
   method?: boolean
   retryCount?: boolean
-  notificationCount?: boolean
-  lastNotifiedAt?: boolean
-  lastRetryAt?: boolean
-  experimentBatchId?: boolean
-  experimentArm?: boolean
   createdAt?: boolean
   recoveredAt?: boolean
+  lastNotifiedAt?: boolean
+  lastRetryAt?: boolean
+  notificationCount?: boolean
+  experimentArm?: boolean
+  experimentBatchId?: boolean
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["payment"]>
 
@@ -1402,13 +1402,13 @@ export type PaymentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   failureReason?: boolean
   method?: boolean
   retryCount?: boolean
-  notificationCount?: boolean
-  lastNotifiedAt?: boolean
-  lastRetryAt?: boolean
-  experimentBatchId?: boolean
-  experimentArm?: boolean
   createdAt?: boolean
   recoveredAt?: boolean
+  lastNotifiedAt?: boolean
+  lastRetryAt?: boolean
+  notificationCount?: boolean
+  experimentArm?: boolean
+  experimentBatchId?: boolean
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["payment"]>
 
@@ -1421,22 +1421,22 @@ export type PaymentSelectScalar = {
   failureReason?: boolean
   method?: boolean
   retryCount?: boolean
-  notificationCount?: boolean
-  lastNotifiedAt?: boolean
-  lastRetryAt?: boolean
-  experimentBatchId?: boolean
-  experimentArm?: boolean
   createdAt?: boolean
   recoveredAt?: boolean
+  lastNotifiedAt?: boolean
+  lastRetryAt?: boolean
+  notificationCount?: boolean
+  experimentArm?: boolean
+  experimentBatchId?: boolean
 }
 
-export type PaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "amount" | "currency" | "customerId" | "status" | "failureReason" | "method" | "retryCount" | "notificationCount" | "lastNotifiedAt" | "lastRetryAt" | "experimentBatchId" | "experimentArm" | "createdAt" | "recoveredAt", ExtArgs["result"]["payment"]>
+export type PaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "amount" | "currency" | "customerId" | "status" | "failureReason" | "method" | "retryCount" | "createdAt" | "recoveredAt" | "lastNotifiedAt" | "lastRetryAt" | "notificationCount" | "experimentArm" | "experimentBatchId", ExtArgs["result"]["payment"]>
 export type PaymentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
   agentDecisions?: boolean | Prisma.Payment$agentDecisionsArgs<ExtArgs>
-  recoveryAttempts?: boolean | Prisma.Payment$recoveryAttemptsArgs<ExtArgs>
   agentState?: boolean | Prisma.Payment$agentStateArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Payment$auditLogsArgs<ExtArgs>
+  customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
+  recoveryAttempts?: boolean | Prisma.Payment$recoveryAttemptsArgs<ExtArgs>
   _count?: boolean | Prisma.PaymentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PaymentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1449,11 +1449,11 @@ export type PaymentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type $PaymentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Payment"
   objects: {
-    customer: Prisma.$CustomerPayload<ExtArgs>
     agentDecisions: Prisma.$AgentDecisionPayload<ExtArgs>[]
-    recoveryAttempts: Prisma.$RecoveryAttemptPayload<ExtArgs>[]
     agentState: Prisma.$AgentStatePayload<ExtArgs> | null
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
+    customer: Prisma.$CustomerPayload<ExtArgs>
+    recoveryAttempts: Prisma.$RecoveryAttemptPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1464,13 +1464,13 @@ export type $PaymentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     failureReason: string
     method: string
     retryCount: number
-    notificationCount: number
-    lastNotifiedAt: Date | null
-    lastRetryAt: Date | null
-    experimentBatchId: string | null
-    experimentArm: string | null
     createdAt: Date
     recoveredAt: Date | null
+    lastNotifiedAt: Date | null
+    lastRetryAt: Date | null
+    notificationCount: number
+    experimentArm: string | null
+    experimentBatchId: string | null
   }, ExtArgs["result"]["payment"]>
   composites: {}
 }
@@ -1865,11 +1865,11 @@ readonly fields: PaymentFieldRefs;
  */
 export interface Prisma__PaymentClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  customer<T extends Prisma.CustomerDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CustomerDefaultArgs<ExtArgs>>): Prisma.Prisma__CustomerClient<runtime.Types.Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   agentDecisions<T extends Prisma.Payment$agentDecisionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Payment$agentDecisionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AgentDecisionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  recoveryAttempts<T extends Prisma.Payment$recoveryAttemptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Payment$recoveryAttemptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RecoveryAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   agentState<T extends Prisma.Payment$agentStateArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Payment$agentStateArgs<ExtArgs>>): Prisma.Prisma__AgentStateClient<runtime.Types.Result.GetResult<Prisma.$AgentStatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   auditLogs<T extends Prisma.Payment$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Payment$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  customer<T extends Prisma.CustomerDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CustomerDefaultArgs<ExtArgs>>): Prisma.Prisma__CustomerClient<runtime.Types.Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  recoveryAttempts<T extends Prisma.Payment$recoveryAttemptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Payment$recoveryAttemptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RecoveryAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1907,13 +1907,13 @@ export interface PaymentFieldRefs {
   readonly failureReason: Prisma.FieldRef<"Payment", 'String'>
   readonly method: Prisma.FieldRef<"Payment", 'String'>
   readonly retryCount: Prisma.FieldRef<"Payment", 'Int'>
-  readonly notificationCount: Prisma.FieldRef<"Payment", 'Int'>
-  readonly lastNotifiedAt: Prisma.FieldRef<"Payment", 'DateTime'>
-  readonly lastRetryAt: Prisma.FieldRef<"Payment", 'DateTime'>
-  readonly experimentBatchId: Prisma.FieldRef<"Payment", 'String'>
-  readonly experimentArm: Prisma.FieldRef<"Payment", 'String'>
   readonly createdAt: Prisma.FieldRef<"Payment", 'DateTime'>
   readonly recoveredAt: Prisma.FieldRef<"Payment", 'DateTime'>
+  readonly lastNotifiedAt: Prisma.FieldRef<"Payment", 'DateTime'>
+  readonly lastRetryAt: Prisma.FieldRef<"Payment", 'DateTime'>
+  readonly notificationCount: Prisma.FieldRef<"Payment", 'Int'>
+  readonly experimentArm: Prisma.FieldRef<"Payment", 'String'>
+  readonly experimentBatchId: Prisma.FieldRef<"Payment", 'String'>
 }
     
 
@@ -2339,30 +2339,6 @@ export type Payment$agentDecisionsArgs<ExtArgs extends runtime.Types.Extensions.
 }
 
 /**
- * Payment.recoveryAttempts
- */
-export type Payment$recoveryAttemptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the RecoveryAttempt
-   */
-  select?: Prisma.RecoveryAttemptSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the RecoveryAttempt
-   */
-  omit?: Prisma.RecoveryAttemptOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.RecoveryAttemptInclude<ExtArgs> | null
-  where?: Prisma.RecoveryAttemptWhereInput
-  orderBy?: Prisma.RecoveryAttemptOrderByWithRelationInput | Prisma.RecoveryAttemptOrderByWithRelationInput[]
-  cursor?: Prisma.RecoveryAttemptWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.RecoveryAttemptScalarFieldEnum | Prisma.RecoveryAttemptScalarFieldEnum[]
-}
-
-/**
  * Payment.agentState
  */
 export type Payment$agentStateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2403,6 +2379,30 @@ export type Payment$auditLogsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.AuditLogScalarFieldEnum | Prisma.AuditLogScalarFieldEnum[]
+}
+
+/**
+ * Payment.recoveryAttempts
+ */
+export type Payment$recoveryAttemptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RecoveryAttempt
+   */
+  select?: Prisma.RecoveryAttemptSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RecoveryAttempt
+   */
+  omit?: Prisma.RecoveryAttemptOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RecoveryAttemptInclude<ExtArgs> | null
+  where?: Prisma.RecoveryAttemptWhereInput
+  orderBy?: Prisma.RecoveryAttemptOrderByWithRelationInput | Prisma.RecoveryAttemptOrderByWithRelationInput[]
+  cursor?: Prisma.RecoveryAttemptWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RecoveryAttemptScalarFieldEnum | Prisma.RecoveryAttemptScalarFieldEnum[]
 }
 
 /**

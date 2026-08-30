@@ -47,6 +47,7 @@ export type AgentDecisionMinAggregateOutputType = {
   retryAfterMinutes: number | null
   confidence: number | null
   reasoning: string | null
+  customerMessage: string | null
   createdAt: Date | null
 }
 
@@ -59,6 +60,7 @@ export type AgentDecisionMaxAggregateOutputType = {
   retryAfterMinutes: number | null
   confidence: number | null
   reasoning: string | null
+  customerMessage: string | null
   createdAt: Date | null
 }
 
@@ -71,8 +73,9 @@ export type AgentDecisionCountAggregateOutputType = {
   retryAfterMinutes: number
   confidence: number
   reasoning: number
-  alternativesConsidered: number
+  customerMessage: number
   createdAt: number
+  alternativesConsidered: number
   _all: number
 }
 
@@ -98,6 +101,7 @@ export type AgentDecisionMinAggregateInputType = {
   retryAfterMinutes?: true
   confidence?: true
   reasoning?: true
+  customerMessage?: true
   createdAt?: true
 }
 
@@ -110,6 +114,7 @@ export type AgentDecisionMaxAggregateInputType = {
   retryAfterMinutes?: true
   confidence?: true
   reasoning?: true
+  customerMessage?: true
   createdAt?: true
 }
 
@@ -122,8 +127,9 @@ export type AgentDecisionCountAggregateInputType = {
   retryAfterMinutes?: true
   confidence?: true
   reasoning?: true
-  alternativesConsidered?: true
+  customerMessage?: true
   createdAt?: true
+  alternativesConsidered?: true
   _all?: true
 }
 
@@ -222,8 +228,9 @@ export type AgentDecisionGroupByOutputType = {
   retryAfterMinutes: number | null
   confidence: number
   reasoning: string
-  alternativesConsidered: runtime.JsonValue | null
+  customerMessage: string | null
   createdAt: Date
+  alternativesConsidered: runtime.JsonValue | null
   _count: AgentDecisionCountAggregateOutputType | null
   _avg: AgentDecisionAvgAggregateOutputType | null
   _sum: AgentDecisionSumAggregateOutputType | null
@@ -258,8 +265,9 @@ export type AgentDecisionWhereInput = {
   retryAfterMinutes?: Prisma.IntNullableFilter<"AgentDecision"> | number | null
   confidence?: Prisma.FloatFilter<"AgentDecision"> | number
   reasoning?: Prisma.StringFilter<"AgentDecision"> | string
-  alternativesConsidered?: Prisma.JsonNullableFilter<"AgentDecision">
+  customerMessage?: Prisma.StringNullableFilter<"AgentDecision"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AgentDecision"> | Date | string
+  alternativesConsidered?: Prisma.JsonNullableFilter<"AgentDecision">
   payment?: Prisma.XOR<Prisma.PaymentScalarRelationFilter, Prisma.PaymentWhereInput>
   policyChecks?: Prisma.PolicyCheckListRelationFilter
   recoveryAttempts?: Prisma.RecoveryAttemptListRelationFilter
@@ -274,8 +282,9 @@ export type AgentDecisionOrderByWithRelationInput = {
   retryAfterMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
   confidence?: Prisma.SortOrder
   reasoning?: Prisma.SortOrder
-  alternativesConsidered?: Prisma.SortOrderInput | Prisma.SortOrder
+  customerMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  alternativesConsidered?: Prisma.SortOrderInput | Prisma.SortOrder
   payment?: Prisma.PaymentOrderByWithRelationInput
   policyChecks?: Prisma.PolicyCheckOrderByRelationAggregateInput
   recoveryAttempts?: Prisma.RecoveryAttemptOrderByRelationAggregateInput
@@ -293,8 +302,9 @@ export type AgentDecisionWhereUniqueInput = Prisma.AtLeast<{
   retryAfterMinutes?: Prisma.IntNullableFilter<"AgentDecision"> | number | null
   confidence?: Prisma.FloatFilter<"AgentDecision"> | number
   reasoning?: Prisma.StringFilter<"AgentDecision"> | string
-  alternativesConsidered?: Prisma.JsonNullableFilter<"AgentDecision">
+  customerMessage?: Prisma.StringNullableFilter<"AgentDecision"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AgentDecision"> | Date | string
+  alternativesConsidered?: Prisma.JsonNullableFilter<"AgentDecision">
   payment?: Prisma.XOR<Prisma.PaymentScalarRelationFilter, Prisma.PaymentWhereInput>
   policyChecks?: Prisma.PolicyCheckListRelationFilter
   recoveryAttempts?: Prisma.RecoveryAttemptListRelationFilter
@@ -309,8 +319,9 @@ export type AgentDecisionOrderByWithAggregationInput = {
   retryAfterMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
   confidence?: Prisma.SortOrder
   reasoning?: Prisma.SortOrder
-  alternativesConsidered?: Prisma.SortOrderInput | Prisma.SortOrder
+  customerMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  alternativesConsidered?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.AgentDecisionCountOrderByAggregateInput
   _avg?: Prisma.AgentDecisionAvgOrderByAggregateInput
   _max?: Prisma.AgentDecisionMaxOrderByAggregateInput
@@ -330,8 +341,9 @@ export type AgentDecisionScalarWhereWithAggregatesInput = {
   retryAfterMinutes?: Prisma.IntNullableWithAggregatesFilter<"AgentDecision"> | number | null
   confidence?: Prisma.FloatWithAggregatesFilter<"AgentDecision"> | number
   reasoning?: Prisma.StringWithAggregatesFilter<"AgentDecision"> | string
-  alternativesConsidered?: Prisma.JsonNullableWithAggregatesFilter<"AgentDecision">
+  customerMessage?: Prisma.StringNullableWithAggregatesFilter<"AgentDecision"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AgentDecision"> | Date | string
+  alternativesConsidered?: Prisma.JsonNullableWithAggregatesFilter<"AgentDecision">
 }
 
 export type AgentDecisionCreateInput = {
@@ -342,8 +354,9 @@ export type AgentDecisionCreateInput = {
   retryAfterMinutes?: number | null
   confidence: number
   reasoning: string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: string | null
   createdAt?: Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   payment: Prisma.PaymentCreateNestedOneWithoutAgentDecisionsInput
   policyChecks?: Prisma.PolicyCheckCreateNestedManyWithoutDecisionInput
   recoveryAttempts?: Prisma.RecoveryAttemptCreateNestedManyWithoutDecisionInput
@@ -358,8 +371,9 @@ export type AgentDecisionUncheckedCreateInput = {
   retryAfterMinutes?: number | null
   confidence: number
   reasoning: string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: string | null
   createdAt?: Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   policyChecks?: Prisma.PolicyCheckUncheckedCreateNestedManyWithoutDecisionInput
   recoveryAttempts?: Prisma.RecoveryAttemptUncheckedCreateNestedManyWithoutDecisionInput
 }
@@ -372,8 +386,9 @@ export type AgentDecisionUpdateInput = {
   retryAfterMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   reasoning?: Prisma.StringFieldUpdateOperationsInput | string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   payment?: Prisma.PaymentUpdateOneRequiredWithoutAgentDecisionsNestedInput
   policyChecks?: Prisma.PolicyCheckUpdateManyWithoutDecisionNestedInput
   recoveryAttempts?: Prisma.RecoveryAttemptUpdateManyWithoutDecisionNestedInput
@@ -388,8 +403,9 @@ export type AgentDecisionUncheckedUpdateInput = {
   retryAfterMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   reasoning?: Prisma.StringFieldUpdateOperationsInput | string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   policyChecks?: Prisma.PolicyCheckUncheckedUpdateManyWithoutDecisionNestedInput
   recoveryAttempts?: Prisma.RecoveryAttemptUncheckedUpdateManyWithoutDecisionNestedInput
 }
@@ -403,8 +419,9 @@ export type AgentDecisionCreateManyInput = {
   retryAfterMinutes?: number | null
   confidence: number
   reasoning: string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: string | null
   createdAt?: Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type AgentDecisionUpdateManyMutationInput = {
@@ -415,8 +432,9 @@ export type AgentDecisionUpdateManyMutationInput = {
   retryAfterMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   reasoning?: Prisma.StringFieldUpdateOperationsInput | string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type AgentDecisionUncheckedUpdateManyInput = {
@@ -428,8 +446,9 @@ export type AgentDecisionUncheckedUpdateManyInput = {
   retryAfterMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   reasoning?: Prisma.StringFieldUpdateOperationsInput | string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type AgentDecisionListRelationFilter = {
@@ -451,8 +470,9 @@ export type AgentDecisionCountOrderByAggregateInput = {
   retryAfterMinutes?: Prisma.SortOrder
   confidence?: Prisma.SortOrder
   reasoning?: Prisma.SortOrder
-  alternativesConsidered?: Prisma.SortOrder
+  customerMessage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  alternativesConsidered?: Prisma.SortOrder
 }
 
 export type AgentDecisionAvgOrderByAggregateInput = {
@@ -470,6 +490,7 @@ export type AgentDecisionMaxOrderByAggregateInput = {
   retryAfterMinutes?: Prisma.SortOrder
   confidence?: Prisma.SortOrder
   reasoning?: Prisma.SortOrder
+  customerMessage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -482,6 +503,7 @@ export type AgentDecisionMinOrderByAggregateInput = {
   retryAfterMinutes?: Prisma.SortOrder
   confidence?: Prisma.SortOrder
   reasoning?: Prisma.SortOrder
+  customerMessage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -582,8 +604,9 @@ export type AgentDecisionCreateWithoutPaymentInput = {
   retryAfterMinutes?: number | null
   confidence: number
   reasoning: string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: string | null
   createdAt?: Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   policyChecks?: Prisma.PolicyCheckCreateNestedManyWithoutDecisionInput
   recoveryAttempts?: Prisma.RecoveryAttemptCreateNestedManyWithoutDecisionInput
 }
@@ -596,8 +619,9 @@ export type AgentDecisionUncheckedCreateWithoutPaymentInput = {
   retryAfterMinutes?: number | null
   confidence: number
   reasoning: string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: string | null
   createdAt?: Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   policyChecks?: Prisma.PolicyCheckUncheckedCreateNestedManyWithoutDecisionInput
   recoveryAttempts?: Prisma.RecoveryAttemptUncheckedCreateNestedManyWithoutDecisionInput
 }
@@ -640,8 +664,9 @@ export type AgentDecisionScalarWhereInput = {
   retryAfterMinutes?: Prisma.IntNullableFilter<"AgentDecision"> | number | null
   confidence?: Prisma.FloatFilter<"AgentDecision"> | number
   reasoning?: Prisma.StringFilter<"AgentDecision"> | string
-  alternativesConsidered?: Prisma.JsonNullableFilter<"AgentDecision">
+  customerMessage?: Prisma.StringNullableFilter<"AgentDecision"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AgentDecision"> | Date | string
+  alternativesConsidered?: Prisma.JsonNullableFilter<"AgentDecision">
 }
 
 export type AgentDecisionCreateWithoutPolicyChecksInput = {
@@ -652,8 +677,9 @@ export type AgentDecisionCreateWithoutPolicyChecksInput = {
   retryAfterMinutes?: number | null
   confidence: number
   reasoning: string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: string | null
   createdAt?: Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   payment: Prisma.PaymentCreateNestedOneWithoutAgentDecisionsInput
   recoveryAttempts?: Prisma.RecoveryAttemptCreateNestedManyWithoutDecisionInput
 }
@@ -667,8 +693,9 @@ export type AgentDecisionUncheckedCreateWithoutPolicyChecksInput = {
   retryAfterMinutes?: number | null
   confidence: number
   reasoning: string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: string | null
   createdAt?: Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   recoveryAttempts?: Prisma.RecoveryAttemptUncheckedCreateNestedManyWithoutDecisionInput
 }
 
@@ -696,8 +723,9 @@ export type AgentDecisionUpdateWithoutPolicyChecksInput = {
   retryAfterMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   reasoning?: Prisma.StringFieldUpdateOperationsInput | string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   payment?: Prisma.PaymentUpdateOneRequiredWithoutAgentDecisionsNestedInput
   recoveryAttempts?: Prisma.RecoveryAttemptUpdateManyWithoutDecisionNestedInput
 }
@@ -711,8 +739,9 @@ export type AgentDecisionUncheckedUpdateWithoutPolicyChecksInput = {
   retryAfterMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   reasoning?: Prisma.StringFieldUpdateOperationsInput | string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   recoveryAttempts?: Prisma.RecoveryAttemptUncheckedUpdateManyWithoutDecisionNestedInput
 }
 
@@ -724,8 +753,9 @@ export type AgentDecisionCreateWithoutRecoveryAttemptsInput = {
   retryAfterMinutes?: number | null
   confidence: number
   reasoning: string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: string | null
   createdAt?: Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   payment: Prisma.PaymentCreateNestedOneWithoutAgentDecisionsInput
   policyChecks?: Prisma.PolicyCheckCreateNestedManyWithoutDecisionInput
 }
@@ -739,8 +769,9 @@ export type AgentDecisionUncheckedCreateWithoutRecoveryAttemptsInput = {
   retryAfterMinutes?: number | null
   confidence: number
   reasoning: string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: string | null
   createdAt?: Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   policyChecks?: Prisma.PolicyCheckUncheckedCreateNestedManyWithoutDecisionInput
 }
 
@@ -768,8 +799,9 @@ export type AgentDecisionUpdateWithoutRecoveryAttemptsInput = {
   retryAfterMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   reasoning?: Prisma.StringFieldUpdateOperationsInput | string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   payment?: Prisma.PaymentUpdateOneRequiredWithoutAgentDecisionsNestedInput
   policyChecks?: Prisma.PolicyCheckUpdateManyWithoutDecisionNestedInput
 }
@@ -783,8 +815,9 @@ export type AgentDecisionUncheckedUpdateWithoutRecoveryAttemptsInput = {
   retryAfterMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   reasoning?: Prisma.StringFieldUpdateOperationsInput | string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   policyChecks?: Prisma.PolicyCheckUncheckedUpdateManyWithoutDecisionNestedInput
 }
 
@@ -796,8 +829,9 @@ export type AgentDecisionCreateManyPaymentInput = {
   retryAfterMinutes?: number | null
   confidence: number
   reasoning: string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: string | null
   createdAt?: Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type AgentDecisionUpdateWithoutPaymentInput = {
@@ -808,8 +842,9 @@ export type AgentDecisionUpdateWithoutPaymentInput = {
   retryAfterMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   reasoning?: Prisma.StringFieldUpdateOperationsInput | string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   policyChecks?: Prisma.PolicyCheckUpdateManyWithoutDecisionNestedInput
   recoveryAttempts?: Prisma.RecoveryAttemptUpdateManyWithoutDecisionNestedInput
 }
@@ -822,8 +857,9 @@ export type AgentDecisionUncheckedUpdateWithoutPaymentInput = {
   retryAfterMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   reasoning?: Prisma.StringFieldUpdateOperationsInput | string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   policyChecks?: Prisma.PolicyCheckUncheckedUpdateManyWithoutDecisionNestedInput
   recoveryAttempts?: Prisma.RecoveryAttemptUncheckedUpdateManyWithoutDecisionNestedInput
 }
@@ -836,8 +872,9 @@ export type AgentDecisionUncheckedUpdateManyWithoutPaymentInput = {
   retryAfterMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   reasoning?: Prisma.StringFieldUpdateOperationsInput | string
-  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  customerMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  alternativesConsidered?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 
@@ -889,8 +926,9 @@ export type AgentDecisionSelect<ExtArgs extends runtime.Types.Extensions.Interna
   retryAfterMinutes?: boolean
   confidence?: boolean
   reasoning?: boolean
-  alternativesConsidered?: boolean
+  customerMessage?: boolean
   createdAt?: boolean
+  alternativesConsidered?: boolean
   payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
   policyChecks?: boolean | Prisma.AgentDecision$policyChecksArgs<ExtArgs>
   recoveryAttempts?: boolean | Prisma.AgentDecision$recoveryAttemptsArgs<ExtArgs>
@@ -906,8 +944,9 @@ export type AgentDecisionSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   retryAfterMinutes?: boolean
   confidence?: boolean
   reasoning?: boolean
-  alternativesConsidered?: boolean
+  customerMessage?: boolean
   createdAt?: boolean
+  alternativesConsidered?: boolean
   payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["agentDecision"]>
 
@@ -920,8 +959,9 @@ export type AgentDecisionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   retryAfterMinutes?: boolean
   confidence?: boolean
   reasoning?: boolean
-  alternativesConsidered?: boolean
+  customerMessage?: boolean
   createdAt?: boolean
+  alternativesConsidered?: boolean
   payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["agentDecision"]>
 
@@ -934,11 +974,12 @@ export type AgentDecisionSelectScalar = {
   retryAfterMinutes?: boolean
   confidence?: boolean
   reasoning?: boolean
-  alternativesConsidered?: boolean
+  customerMessage?: boolean
   createdAt?: boolean
+  alternativesConsidered?: boolean
 }
 
-export type AgentDecisionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "paymentId" | "failureType" | "recoverabilityScore" | "strategy" | "retryAfterMinutes" | "confidence" | "reasoning" | "alternativesConsidered" | "createdAt", ExtArgs["result"]["agentDecision"]>
+export type AgentDecisionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "paymentId" | "failureType" | "recoverabilityScore" | "strategy" | "retryAfterMinutes" | "confidence" | "reasoning" | "customerMessage" | "createdAt" | "alternativesConsidered", ExtArgs["result"]["agentDecision"]>
 export type AgentDecisionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
   policyChecks?: boolean | Prisma.AgentDecision$policyChecksArgs<ExtArgs>
@@ -968,8 +1009,9 @@ export type $AgentDecisionPayload<ExtArgs extends runtime.Types.Extensions.Inter
     retryAfterMinutes: number | null
     confidence: number
     reasoning: string
-    alternativesConsidered: runtime.JsonValue | null
+    customerMessage: string | null
     createdAt: Date
+    alternativesConsidered: runtime.JsonValue | null
   }, ExtArgs["result"]["agentDecision"]>
   composites: {}
 }
@@ -1404,8 +1446,9 @@ export interface AgentDecisionFieldRefs {
   readonly retryAfterMinutes: Prisma.FieldRef<"AgentDecision", 'Int'>
   readonly confidence: Prisma.FieldRef<"AgentDecision", 'Float'>
   readonly reasoning: Prisma.FieldRef<"AgentDecision", 'String'>
-  readonly alternativesConsidered: Prisma.FieldRef<"AgentDecision", 'Json'>
+  readonly customerMessage: Prisma.FieldRef<"AgentDecision", 'String'>
   readonly createdAt: Prisma.FieldRef<"AgentDecision", 'DateTime'>
+  readonly alternativesConsidered: Prisma.FieldRef<"AgentDecision", 'Json'>
 }
     
 

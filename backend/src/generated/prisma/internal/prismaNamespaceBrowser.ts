@@ -109,13 +109,13 @@ export const PaymentScalarFieldEnum = {
   failureReason: 'failureReason',
   method: 'method',
   retryCount: 'retryCount',
-  notificationCount: 'notificationCount',
+  createdAt: 'createdAt',
+  recoveredAt: 'recoveredAt',
   lastNotifiedAt: 'lastNotifiedAt',
   lastRetryAt: 'lastRetryAt',
-  experimentBatchId: 'experimentBatchId',
+  notificationCount: 'notificationCount',
   experimentArm: 'experimentArm',
-  createdAt: 'createdAt',
-  recoveredAt: 'recoveredAt'
+  experimentBatchId: 'experimentBatchId'
 } as const
 
 export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
@@ -130,8 +130,9 @@ export const AgentDecisionScalarFieldEnum = {
   retryAfterMinutes: 'retryAfterMinutes',
   confidence: 'confidence',
   reasoning: 'reasoning',
-  alternativesConsidered: 'alternativesConsidered',
-  createdAt: 'createdAt'
+  customerMessage: 'customerMessage',
+  createdAt: 'createdAt',
+  alternativesConsidered: 'alternativesConsidered'
 } as const
 
 export type AgentDecisionScalarFieldEnum = (typeof AgentDecisionScalarFieldEnum)[keyof typeof AgentDecisionScalarFieldEnum]

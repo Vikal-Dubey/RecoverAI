@@ -198,8 +198,8 @@ export type RecoveryAttemptWhereInput = {
   executedAt?: Prisma.DateTimeNullableFilter<"RecoveryAttempt"> | Date | string | null
   outcome?: Prisma.StringNullableFilter<"RecoveryAttempt"> | string | null
   createdAt?: Prisma.DateTimeFilter<"RecoveryAttempt"> | Date | string
-  payment?: Prisma.XOR<Prisma.PaymentScalarRelationFilter, Prisma.PaymentWhereInput>
   decision?: Prisma.XOR<Prisma.AgentDecisionScalarRelationFilter, Prisma.AgentDecisionWhereInput>
+  payment?: Prisma.XOR<Prisma.PaymentScalarRelationFilter, Prisma.PaymentWhereInput>
 }
 
 export type RecoveryAttemptOrderByWithRelationInput = {
@@ -210,8 +210,8 @@ export type RecoveryAttemptOrderByWithRelationInput = {
   executedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   outcome?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  payment?: Prisma.PaymentOrderByWithRelationInput
   decision?: Prisma.AgentDecisionOrderByWithRelationInput
+  payment?: Prisma.PaymentOrderByWithRelationInput
 }
 
 export type RecoveryAttemptWhereUniqueInput = Prisma.AtLeast<{
@@ -225,8 +225,8 @@ export type RecoveryAttemptWhereUniqueInput = Prisma.AtLeast<{
   executedAt?: Prisma.DateTimeNullableFilter<"RecoveryAttempt"> | Date | string | null
   outcome?: Prisma.StringNullableFilter<"RecoveryAttempt"> | string | null
   createdAt?: Prisma.DateTimeFilter<"RecoveryAttempt"> | Date | string
-  payment?: Prisma.XOR<Prisma.PaymentScalarRelationFilter, Prisma.PaymentWhereInput>
   decision?: Prisma.XOR<Prisma.AgentDecisionScalarRelationFilter, Prisma.AgentDecisionWhereInput>
+  payment?: Prisma.XOR<Prisma.PaymentScalarRelationFilter, Prisma.PaymentWhereInput>
 }, "id">
 
 export type RecoveryAttemptOrderByWithAggregationInput = {
@@ -261,8 +261,8 @@ export type RecoveryAttemptCreateInput = {
   executedAt?: Date | string | null
   outcome?: string | null
   createdAt?: Date | string
-  payment: Prisma.PaymentCreateNestedOneWithoutRecoveryAttemptsInput
   decision: Prisma.AgentDecisionCreateNestedOneWithoutRecoveryAttemptsInput
+  payment: Prisma.PaymentCreateNestedOneWithoutRecoveryAttemptsInput
 }
 
 export type RecoveryAttemptUncheckedCreateInput = {
@@ -281,8 +281,8 @@ export type RecoveryAttemptUpdateInput = {
   executedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  payment?: Prisma.PaymentUpdateOneRequiredWithoutRecoveryAttemptsNestedInput
   decision?: Prisma.AgentDecisionUpdateOneRequiredWithoutRecoveryAttemptsNestedInput
+  payment?: Prisma.PaymentUpdateOneRequiredWithoutRecoveryAttemptsNestedInput
 }
 
 export type RecoveryAttemptUncheckedUpdateInput = {
@@ -630,8 +630,8 @@ export type RecoveryAttemptSelect<ExtArgs extends runtime.Types.Extensions.Inter
   executedAt?: boolean
   outcome?: boolean
   createdAt?: boolean
-  payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
   decision?: boolean | Prisma.AgentDecisionDefaultArgs<ExtArgs>
+  payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["recoveryAttempt"]>
 
 export type RecoveryAttemptSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -642,8 +642,8 @@ export type RecoveryAttemptSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   executedAt?: boolean
   outcome?: boolean
   createdAt?: boolean
-  payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
   decision?: boolean | Prisma.AgentDecisionDefaultArgs<ExtArgs>
+  payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["recoveryAttempt"]>
 
 export type RecoveryAttemptSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -654,8 +654,8 @@ export type RecoveryAttemptSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   executedAt?: boolean
   outcome?: boolean
   createdAt?: boolean
-  payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
   decision?: boolean | Prisma.AgentDecisionDefaultArgs<ExtArgs>
+  payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["recoveryAttempt"]>
 
 export type RecoveryAttemptSelectScalar = {
@@ -670,23 +670,23 @@ export type RecoveryAttemptSelectScalar = {
 
 export type RecoveryAttemptOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "paymentId" | "decisionId" | "scheduledAt" | "executedAt" | "outcome" | "createdAt", ExtArgs["result"]["recoveryAttempt"]>
 export type RecoveryAttemptInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
   decision?: boolean | Prisma.AgentDecisionDefaultArgs<ExtArgs>
+  payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
 }
 export type RecoveryAttemptIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
   decision?: boolean | Prisma.AgentDecisionDefaultArgs<ExtArgs>
+  payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
 }
 export type RecoveryAttemptIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
   decision?: boolean | Prisma.AgentDecisionDefaultArgs<ExtArgs>
+  payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
 }
 
 export type $RecoveryAttemptPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "RecoveryAttempt"
   objects: {
-    payment: Prisma.$PaymentPayload<ExtArgs>
     decision: Prisma.$AgentDecisionPayload<ExtArgs>
+    payment: Prisma.$PaymentPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1090,8 +1090,8 @@ readonly fields: RecoveryAttemptFieldRefs;
  */
 export interface Prisma__RecoveryAttemptClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  payment<T extends Prisma.PaymentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PaymentDefaultArgs<ExtArgs>>): Prisma.Prisma__PaymentClient<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   decision<T extends Prisma.AgentDecisionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AgentDecisionDefaultArgs<ExtArgs>>): Prisma.Prisma__AgentDecisionClient<runtime.Types.Result.GetResult<Prisma.$AgentDecisionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  payment<T extends Prisma.PaymentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PaymentDefaultArgs<ExtArgs>>): Prisma.Prisma__PaymentClient<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

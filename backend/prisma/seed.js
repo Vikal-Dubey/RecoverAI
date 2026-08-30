@@ -56,7 +56,7 @@ async function main() {
 
     await prisma.payment.create({
       data: {
-        amount: faker.number.int({ min: 9900, max: 499900 }), // in paise
+        amount: faker.number.int({ min: 9900, max: 900000 }), // in paise — up to ₹9,000, ensures some clear the ₹5,000 escalation threshold
         currency: 'INR',
         customerId: customer.id,
         status: 'FAILED',

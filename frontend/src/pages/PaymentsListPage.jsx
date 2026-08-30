@@ -4,7 +4,7 @@ import { getPayments, simulateFailure } from '../api/payments';
 import StatusBadge from '../components/StatusBadge';
 import DashboardStats from '../components/DashboardStats';
 import ActivityFeed from '../components/ActivityFeed';
-import { formatINR, formatFailureReason } from '../utils/format';
+import { formatINR, formatFailureReason, computeRiskTier } from '../utils/format';
 import socket from '../api/socket';
 import { useSocketEvent } from '../hooks/useSocketEvent';
 
@@ -164,6 +164,7 @@ export default function PaymentsListPage() {
               <tr>
                 <th className="text-left px-4 py-2.5">Customer</th>
                 <th className="text-left px-4 py-2.5">Amount</th>
+                <th className="text-left px-4 py-2.5">Customer Risk</th>
                 <th className="text-left px-4 py-2.5">Failure Reason</th>
                 <th className="text-left px-4 py-2.5">Status</th>
                 <th className="text-left px-4 py-2.5">Notified</th>
@@ -182,6 +183,16 @@ export default function PaymentsListPage() {
                   >
                     <td className="px-4 py-3">{p.customer.name}</td>
                     <td className="px-4 py-3">{formatINR(p.amount)}</td>
+                    <td className="px-4 py-3">
+                      {(() => {
+                        const tier = computeRiskTier(p.customer);
+                        return (
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${tier.color}`}>
+                            {tier.short}
+                          </span>
+                        );
+                      })()}
+                    </td>
                     <td className="px-4 py-3 text-gray-600">{formatFailureReason(p.failureReason)}</td>
                     <td className="px-4 py-3">
                       <StatusBadge status={p.status} />

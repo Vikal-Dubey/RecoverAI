@@ -65,6 +65,7 @@ Recovery History: ${JSON.stringify(recoveryHistory)}
     confidence: raw.diagnosis.confidence,
     reasoning: raw.reasoning,
     alternativesConsidered: raw.alternativesConsidered,
+    customerMessage: raw.customerMessage ?? null,
   };
 
   return { payment, proposal };

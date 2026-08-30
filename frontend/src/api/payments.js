@@ -13,6 +13,11 @@ export async function getPaymentDetail(id) {
   return res.data;
 }
 
+export async function getLatestExperiment() {
+  const res = await client.get('/experiments/latest');
+  return res.data;
+}
+
 export async function simulateFailure(failureReason) {
   const res = await client.post('/payments/simulate-failure', failureReason ? { failureReason } : {});
   return res.data;

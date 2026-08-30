@@ -30,6 +30,7 @@ export async function handlePaymentFailedEvent(webhookPayload) {
       confidence: proposal.confidence,
       reasoning: proposal.reasoning,
       alternativesConsidered: proposal.alternativesConsidered,
+      customerMessage: proposal.customerMessage,
     },
   });
 
