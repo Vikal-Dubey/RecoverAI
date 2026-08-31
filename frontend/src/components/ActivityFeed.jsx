@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSocketEvent } from '../hooks/useSocketEvent';
 import { formatFailureReason } from '../utils/format';
 
@@ -23,6 +24,7 @@ function summarize(result) {
 
   return {
     id: `${payment.id}-${Date.now()}`,
+    paymentId: payment.id,
     customer: payment.customer?.name || 'Customer',
     action: formatFailureReason(policyResult.action),
     outcome,
@@ -32,6 +34,7 @@ function summarize(result) {
 
 export default function ActivityFeed() {
   const [events, setEvents] = useState([]);
+  const navigate = useNavigate();
 
   useSocketEvent(
     'recovery:completed',
@@ -48,7 +51,11 @@ export default function ActivityFeed() {
       <h3 className="text-sm font-semibold text-gray-900 mb-3">Live Activity</h3>
       <ul className="space-y-2 max-h-56 overflow-y-auto">
         {events.map((e) => (
-          <li key={e.id} className="text-sm border-b border-gray-50 pb-2 last:border-0 last:pb-0">
+          <li
+            key={e.id}
+            onClick={() => navigate(`/payments/${e.paymentId}`)}
+            className="text-sm border-b border-gray-50 pb-2 last:border-0 last:pb-0 cursor-pointer hover:bg-gray-50 rounded px-1.5 -mx-1.5 transition"
+          >
             <div className="flex items-center justify-between">
               <span className="font-medium text-gray-800">{e.customer}</span>
               <span className="text-xs text-gray-400">{e.time.toLocaleTimeString()}</span>

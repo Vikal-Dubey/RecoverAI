@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { getPayments, simulateFailure } from '../api/payments';
 import StatusBadge from '../components/StatusBadge';
 import DashboardStats from '../components/DashboardStats';
-import ActivityFeed from '../components/ActivityFeed';
 import { formatINR, formatFailureReason, computeRiskTier } from '../utils/format';
 import socket from '../api/socket';
 import { useSocketEvent } from '../hooks/useSocketEvent';
@@ -101,7 +100,6 @@ export default function PaymentsListPage() {
   return (
     <div>
       <DashboardStats />
-      <ActivityFeed />
 
       <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div className="flex gap-2 flex-wrap">

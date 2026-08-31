@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import ActivityFeed from './ActivityFeed';
 
 export default function Layout({ children }) {
   return (
@@ -14,7 +15,10 @@ export default function Layout({ children }) {
           </nav>
         </div>
       </header>
-      <main className="max-w-6xl mx-auto px-6 py-6">{children}</main>
+      <main className="max-w-6xl mx-auto px-6 py-6">
+        <ActivityFeed />
+        {children}
+      </main>
     </div>
   );
 }
