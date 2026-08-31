@@ -37,7 +37,7 @@ export default function PolicyChecksPanel({ checks }) {
               {groups[groupName].map((check) => (
                 <li key={check.id} className="flex items-start gap-2">
                   <span
-                    className={`mt-0.5 flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                    className={`mt-0.5 shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold ${
                       check.passed ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
                     }`}
                   >
