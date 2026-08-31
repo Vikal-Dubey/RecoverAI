@@ -194,12 +194,14 @@ app.post('/experiments/run', async (req, res) => {
 // --- Dashboard stats ---
 app.get('/dashboard/stats', async (req, res) => {
   try {
+    const scope = { experimentBatchId: null };
+
     const [total, recovered, escalated, failed] = await withRetry(() =>
       Promise.all([
-        prisma.payment.count(),
-        prisma.payment.count({ where: { status: 'RECOVERED' } }),
-        prisma.payment.count({ where: { status: 'ESCALATED' } }),
-        prisma.payment.count({ where: { status: 'FAILED' } }),
+        prisma.payment.count({ where: scope }),
+        prisma.payment.count({ where: { ...scope, status: 'RECOVERED' } }),
+        prisma.payment.count({ where: { ...scope, status: 'ESCALATED' } }),
+        prisma.payment.count({ where: { ...scope, status: 'FAILED' } }),
       ])
     );
 
