@@ -1,11 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getPayments, simulateFailure } from '../api/payments';
 import StatusBadge from '../components/StatusBadge';
 import DashboardStats from '../components/DashboardStats';
 import { formatINR, formatFailureReason, computeRiskTier } from '../utils/format';
 import socket from '../api/socket';
 import { useSocketEvent } from '../hooks/useSocketEvent';
+import { getPayments, simulateFailure, simulateMany } from '../api/payments';
+import SystemHealth from '../components/SystemHealth';
 
 const FAILURE_TYPES = [
   'insufficient_funds',
@@ -33,6 +34,8 @@ export default function PaymentsListPage() {
   const [error, setError] = useState(null);
   const [simulating, setSimulating] = useState(false);
   const [connected, setConnected] = useState(socket.connected);
+  const [bulkSimulating, setBulkSimulating] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -97,9 +100,27 @@ export default function PaymentsListPage() {
     }
   }
 
+  async function handleSimulateMany() {
+    setBulkSimulating(true);
+    setError(null);
+    setBulkProgress({ done: 0, total: 8 });
+    try {
+      await simulateMany(8, failureType || undefined, (done, total) =>
+        setBulkProgress({ done, total })
+      );
+      await reloadPayments();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBulkSimulating(false);
+      setBulkProgress(null);
+    }
+  }
+
   return (
     <div>
-      <DashboardStats />
+      <SystemHealth />
+      <DashboardStats />  
 
       <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div className="flex gap-2 flex-wrap">
@@ -144,6 +165,15 @@ export default function PaymentsListPage() {
           >
             {simulating ? 'Simulating…' : 'Simulate Failure'}
           </button>
+
+          <button
+            onClick={handleSimulateMany}
+            disabled={simulating || bulkSimulating}
+            className="px-4 py-1.5 rounded-md text-sm font-medium bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50"
+          >
+            {bulkSimulating ? `Recovering… ${bulkProgress?.done ?? 0}/${bulkProgress?.total ?? 8}` : 'Recover Many (x8)'}
+          </button>
+
         </div>
       </div>
 

@@ -253,3 +253,14 @@ httpServer.listen(PORT, () => {
 withRetry(() => prisma.customer.count())
   .then(() => console.log('[DB] Warmed up and ready'))
   .catch((err) => console.warn('[DB] Warm-up failed, will retry on first request:', err.message));
+
+app.get('/health', async (req, res) => {
+  const health = { backend: true, db: false, gemini: !!process.env.GEMINI_API_KEY };
+  try {
+    await withRetry(() => prisma.customer.count(), 1, 1000);
+    health.db = true;
+  } catch (err) {
+    health.db = false;
+  }
+  res.json(health);
+});
