@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { getHealth } from '../api/payments';
-
-function Dot({ ok }) {
-  return <span className={`w-1.5 h-1.5 rounded-full ${ok ? 'bg-green-500' : 'bg-red-400'}`} />;
-}
 
 export default function SystemHealth() {
   const [health, setHealth] = useState(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const popoverRef = useRef(null);
 
   useEffect(() => {
     let ignore = false;
@@ -26,13 +24,70 @@ export default function SystemHealth() {
     };
   }, []);
 
-  if (!health) return null;
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (popoverRef.current && !popoverRef.current.contains(e.target)) {
+        setShowDetails(false);
+      }
+    }
+    if (showDetails) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showDetails]);
+
+  if (!health) {
+    return (
+      <div className="flex items-center gap-2 text-xs text-muted">
+        <span className="w-1.5 h-1.5 rounded-full bg-muted-2" />
+        <span>Checking systems...</span>
+      </div>
+    );
+  }
+
+  const allOperational = health.backend && health.db && health.gemini;
 
   return (
-    <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
-      <span className="flex items-center gap-1"><Dot ok={health.backend} /> Backend</span>
-      <span className="flex items-center gap-1"><Dot ok={health.db} /> Database</span>
-      <span className="flex items-center gap-1"><Dot ok={health.gemini} /> AI Agent</span>
+    <div className="relative" ref={popoverRef}>
+      <button
+        type="button"
+        onClick={() => setShowDetails((prev) => !prev)}
+        className="flex items-center gap-1.5 text-xs text-muted hover:text-text transition py-1 px-2 rounded-md hover:bg-surface-2"
+      >
+        <span className={`w-2 h-2 rounded-full ${allOperational ? 'bg-accent' : 'bg-warn'}`} />
+        <span>{allOperational ? 'All systems operational' : 'System issue detected'}</span>
+      </button>
+
+      {showDetails && (
+        <div className="absolute right-0 top-full mt-2 w-52 bg-surface-2 border border-border rounded-xl p-3 shadow-xl z-50 text-xs space-y-2">
+          <div className="text-[11px] font-semibold text-muted uppercase tracking-wider mb-1">
+            System Status
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-text">Backend</span>
+            <span className="flex items-center gap-1">
+              <span className={`w-1.5 h-1.5 rounded-full ${health.backend ? 'bg-accent' : 'bg-danger'}`} />
+              <span className={health.backend ? 'text-accent' : 'text-danger'}>{health.backend ? 'Operational' : 'Down'}</span>
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-text">Database</span>
+            <span className="flex items-center gap-1">
+              <span className={`w-1.5 h-1.5 rounded-full ${health.db ? 'bg-accent' : 'bg-danger'}`} />
+              <span className={health.db ? 'text-accent' : 'text-danger'}>{health.db ? 'Connected' : 'Error'}</span>
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-text">AI Agent</span>
+            <span className="flex items-center gap-1">
+              <span className={`w-1.5 h-1.5 rounded-full ${health.gemini ? 'bg-accent' : 'bg-danger'}`} />
+              <span className={health.gemini ? 'text-accent' : 'text-danger'}>{health.gemini ? 'Ready' : 'Offline'}</span>
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+}

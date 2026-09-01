@@ -23,6 +23,11 @@ export async function simulateFailure(failureReason) {
   return res.data;
 }
 
+export async function simulatePaymentFailure(paymentId, failureReason) {
+  const res = await client.post(`/payments/${paymentId}/simulate-failure`, failureReason ? { failureReason } : {});
+  return res.data;
+}
+
 export async function executeRecovery(paymentId) {
   const res = await client.post(`/payments/${paymentId}/recovery/execute`);
   return res.data;

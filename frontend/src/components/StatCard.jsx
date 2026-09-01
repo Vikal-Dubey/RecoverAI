@@ -1,8 +1,9 @@
-export default function StatCard({ label, value, accent = 'text-gray-900' }) {
+export default function StatCard({ label, value, sublabel, accent = 'text-text', className = '' }) {
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4">
-      <div className="text-xs text-gray-500">{label}</div>
-      <div className={`text-2xl font-semibold mt-1 ${accent}`}>{value}</div>
+    <div className={`bg-surface border border-border rounded-xl p-4 ${className}`}>
+      <div className="text-xs font-medium text-muted uppercase tracking-wider">{label}</div>
+      <div className={`text-2xl font-bold font-mono tracking-tight mt-1.5 ${accent}`}>{value}</div>
+      {sublabel && <div className="text-xs text-muted-2 mt-1">{sublabel}</div>}
     </div>
   );
-}
+}

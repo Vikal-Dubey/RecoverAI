@@ -37,29 +37,28 @@ export default function DashboardStats() {
 
   useSocketEvent('recovery:completed', loadStats);
   useSocketEvent('recovery:decision', loadStats);
+  useSocketEvent('payment:failed', loadStats);
 
   if (error) return null; // fail quietly — stats are supplementary, not blocking
+
   if (!stats) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-5">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="bg-white rounded-lg border border-gray-200 p-4 animate-pulse h-20" />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="bg-surface border border-border rounded-xl p-4 animate-pulse h-20" />
         ))}
       </div>
     );
   }
 
+  const recoveryPct = Math.round((stats.recoveryRate || 0) * 100);
+
   return (
-    <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-5">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
       <StatCard label="Total Payments" value={stats.total} />
-      <StatCard label="Recovered" value={stats.recovered} accent="text-green-600" />
-      <StatCard label="Escalated" value={stats.escalated} accent="text-purple-600" />
-      <StatCard label="Failed" value={stats.failed} accent="text-red-600" />
-      <StatCard
-        label="Recovery Rate"
-        value={`${Math.round(stats.recoveryRate * 100)}%`}
-        accent="text-indigo-600"
-      />
+      <StatCard label="Recovered" value={stats.recovered} accent="text-accent" />
+      <StatCard label="Recovery Rate" value={`${recoveryPct}%`} accent="text-accent" />
+      <StatCard label="Escalated" value={stats.escalated} accent="text-warn" />
     </div>
   );
-}
+}

@@ -1,1 +1,67 @@
 @import "tailwindcss";
+
+:root {
+  --bg: #0E1310;
+  --surface: #161C18;
+  --surface-2: #1C231E;
+
+  --border: #262F29;
+  --border-soft: #1F2721;
+
+  --text: #EDEFEC;
+  --muted: #8B958E;
+  --muted-2: #5E6862;
+
+  --accent: #34A87C;
+  --accent-dim: #1F4A38;
+
+  --warn: #D9A441;
+  --warn-dim: #4A3D20;
+
+  --danger: #C1584D;
+  --danger-dim: #4A2620;
+}
+
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-soft: var(--border-soft);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-muted-2: var(--muted-2);
+  --color-accent: var(--accent);
+  --color-accent-dim: var(--accent-dim);
+  --color-warn: var(--warn);
+  --color-warn-dim: var(--warn-dim);
+  --color-danger: var(--danger);
+  --color-danger-dim: var(--danger-dim);
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+/* Stepper active pulse ring */
+@keyframes pulseRing {
+  0% {
+    box-shadow: 0 0 0 0 rgba(217, 164, 65, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(217, 164, 65, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(217, 164, 65, 0);
+  }
+}
+
+.stepper-active-pulse {
+  animation: pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

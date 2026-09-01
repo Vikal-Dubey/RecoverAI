@@ -2,30 +2,49 @@ import Card from './Card';
 import { formatINRRupees, computeRiskTier } from '../utils/format';
 
 export default function CustomerRiskPanel({ customer }) {
-  if (!customer) return null;
-  const total = customer.successCount + customer.failCount;
+  if (!customer) {
+    return (
+      <Card title="Customer">
+        <p className="text-xs text-muted">No customer data available.</p>
+      </Card>
+    );
+  }
+
   const tier = computeRiskTier(customer);
 
   return (
-    <Card title="Customer Profile">
-      <div className="space-y-2 text-sm">
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-500">Lifetime Value</span>
-          <span className="font-medium text-gray-900">{formatINRRupees(customer.ltv)}</span>
+    <Card title="Customer">
+      <div className="space-y-3.5">
+        <div>
+          <div className="text-base font-bold text-text">{customer.name}</div>
+          {customer.email && (
+            <div className="text-xs text-muted font-mono mt-0.5">{customer.email}</div>
+          )}
         </div>
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-500">Success Rate</span>
-          <span className="font-medium text-gray-900">
-            {Math.round(tier.rate * 100)}% ({customer.successCount}/{total})
-          </span>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-500">Risk Tier</span>
-          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${tier.color}`}>
-            {tier.label}
-          </span>
+
+        <div className="space-y-2 pt-2 border-t border-border-soft text-xs">
+          {customer.ltv != null && (
+            <div className="flex items-center justify-between">
+              <span className="text-muted">LTV</span>
+              <span className="font-mono font-medium text-text">{formatINRRupees(customer.ltv)}</span>
+            </div>
+          )}
+
+          {tier.rate != null && (
+            <div className="flex items-center justify-between">
+              <span className="text-muted">Success Rate</span>
+              <span className="font-mono font-medium text-text">{Math.round(tier.rate * 100)}%</span>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between">
+            <span className="text-muted">Risk</span>
+            <span className={`px-2 py-0.5 rounded text-[11px] font-bold ${tier.color}`}>
+              {tier.short}
+            </span>
+          </div>
         </div>
       </div>
     </Card>
   );
-}
+}

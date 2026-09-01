@@ -1,27 +1,45 @@
 export default function ComparisonBar({ label, aValue, bValue, format = (v) => v, higherIsBetter = true }) {
-  const max = Math.max(aValue, bValue) || 1;
-  const aWins = higherIsBetter ? aValue >= bValue : aValue <= bValue;
+  const numA = Number(aValue) || 0;
+  const numB = Number(bValue) || 0;
+  const max = Math.max(numA, numB) || 1;
+  const aWins = higherIsBetter ? numA >= numB : numA <= numB;
 
   return (
-    <div className="mb-4">
-      <div className="text-xs text-gray-500 mb-1">{label}</div>
+    <div className="p-3.5 rounded-xl bg-surface-2/60 border border-border-soft space-y-2.5">
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-muted font-medium">{label}</span>
+        {aWins && (
+          <span className="text-[11px] font-semibold text-accent flex items-center gap-1">
+            <span>✓</span> RecoverAI advantage
+          </span>
+        )}
+      </div>
+
       <div className="space-y-1.5">
-        <div className="flex items-center gap-2">
-          <span className="w-20 text-xs font-medium text-indigo-700">RecoverAI</span>
-          <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
-            <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${(aValue / max) * 100}%` }} />
+        {/* RecoverAI Arm */}
+        <div className="flex items-center gap-3 text-xs">
+          <span className="w-20 font-semibold text-text">RecoverAI</span>
+          <div className="flex-1 h-2 bg-surface rounded-full overflow-hidden">
+            <div
+              className="h-full bg-accent rounded-full transition-all duration-300"
+              style={{ width: `${Math.min(100, Math.max(5, (numA / max) * 100))}%` }}
+            />
           </div>
-          <span className="w-28 text-xs text-right font-medium text-gray-800">{format(aValue)}</span>
+          <span className="w-24 text-right font-mono font-medium text-text">{format(aValue)}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="w-20 text-xs font-medium text-gray-500">Baseline</span>
-          <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
-            <div className="h-full bg-gray-400 rounded-full" style={{ width: `${(bValue / max) * 100}%` }} />
+
+        {/* Baseline Arm */}
+        <div className="flex items-center gap-3 text-xs">
+          <span className="w-20 text-muted">Baseline</span>
+          <div className="flex-1 h-2 bg-surface rounded-full overflow-hidden">
+            <div
+              className="h-full bg-muted-2 rounded-full transition-all duration-300"
+              style={{ width: `${Math.min(100, Math.max(5, (numB / max) * 100))}%` }}
+            />
           </div>
-          <span className="w-28 text-xs text-right font-medium text-gray-800">{format(bValue)}</span>
+          <span className="w-24 text-right font-mono text-muted">{format(bValue)}</span>
         </div>
       </div>
-      {aWins && <div className="text-[11px] text-green-600 mt-0.5">✓ RecoverAI wins</div>}
     </div>
   );
-}
+}

@@ -1,81 +1,95 @@
+import { useState } from 'react';
 import Card from './Card';
 import { formatFailureReason } from '../utils/format';
 
 export default function DiagnosisPanel({ decision }) {
+  const [showAlternatives, setShowAlternatives] = useState(false);
+
   if (!decision) {
     return (
-      <Card title="AI Diagnosis">
-        <p className="text-sm text-gray-400">No decision recorded yet.</p>
+      <Card title="AI Recommendation">
+        <p className="text-xs text-muted">Waiting for AI recommendation...</p>
       </Card>
     );
   }
 
+  const confidencePct = decision.confidence != null ? Math.round(decision.confidence * 100) : null;
+  const hasAlternatives = decision.alternativesConsidered && decision.alternativesConsidered.length > 0;
+
   return (
-    <Card title="AI Diagnosis">
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-500">Strategy</span>
-          <span className="text-sm font-medium text-gray-900">
-            {formatFailureReason(decision.strategy)}
-          </span>
-        </div>
+    <Card title="AI Recommendation">
+      <div className="space-y-4">
+        {/* Strategy Title */}
         <div>
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-xs text-gray-500">Confidence</span>
-            <span className="text-sm font-medium text-gray-900">{Math.round(decision.confidence * 100)}%</span>
+          <div className="text-base font-bold text-text">
+            {formatFailureReason(decision.strategy)}
           </div>
-          <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-indigo-500 rounded-full"
-              style={{ width: `${decision.confidence * 100}%` }}
-            />
-          </div>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-500">Recoverability Score</span>
-          <span className="text-sm font-medium text-gray-900">
-            {Math.round(decision.recoverabilityScore * 100)}%
-          </span>
-        </div>
-        {decision.retryAfterMinutes != null && (
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-500">Retry Delay</span>
-            <span className="text-sm font-medium text-gray-900">
-              {decision.retryAfterMinutes} min
-            </span>
-          </div>
-        )}
-
-        <div className="pt-2 border-t border-gray-100">
-          <span className="text-xs text-gray-500">Reasoning</span>
-          <p className="text-sm text-gray-700 mt-1">{decision.reasoning}</p>
+          {decision.retryAfterMinutes != null && decision.retryAfterMinutes > 0 && (
+            <div className="text-xs text-muted mt-0.5">
+              Scheduled after +{decision.retryAfterMinutes} min
+            </div>
+          )}
         </div>
 
-        {decision.customerMessage && (
-          <div className="pt-2 border-t border-gray-100">
-            <span className="text-xs text-gray-500">Customer Message (Hinglish)</span>
-            <div className="mt-1 bg-indigo-50 border border-indigo-100 rounded-md px-3 py-2">
-              <p className="text-sm text-indigo-900">{decision.customerMessage}</p>
+        {/* Confidence Row — Only if confidence is non-null */}
+        {confidencePct != null && (
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-muted">Confidence</span>
+              <span className="font-mono text-text font-medium">{confidencePct}%</span>
+            </div>
+            <div className="w-full h-1.5 bg-surface-2 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-accent rounded-full transition-all duration-300"
+                style={{ width: `${confidencePct}%` }}
+              />
             </div>
           </div>
         )}
 
-        {decision.alternativesConsidered?.length > 0 && (
-          <div className="pt-2 border-t border-gray-100">
-            <span className="text-xs text-gray-500">Alternatives Considered</span>
-            <ul className="mt-1 space-y-1.5">
-              {decision.alternativesConsidered.map((alt, i) => (
-                <li key={i} className="text-sm text-gray-600">
-                  <span className="font-medium text-gray-800">
-                    {formatFailureReason(alt.action)}
-                  </span>{' '}
-                  — {alt.rejectedBecause}
-                </li>
-              ))}
-            </ul>
+        {/* Reasoning / Why? — Only if reasoning exists */}
+        {decision.reasoning && (
+          <div className="pt-2 border-t border-border-soft">
+            <span className="text-xs font-semibold text-muted block mb-1">Why?</span>
+            <p className="text-xs text-text leading-relaxed font-sans">
+              {decision.reasoning}
+            </p>
+          </div>
+        )}
+
+        {/* Customer Hinglish message preview if available */}
+        {decision.customerMessage && (
+          <div className="p-3 rounded-lg bg-surface-2 border border-border-soft text-xs">
+            <span className="text-muted text-[11px] block mb-1 font-medium">Customer Communication</span>
+            <p className="text-text italic">"{decision.customerMessage}"</p>
+          </div>
+        )}
+
+        {/* Collapsible Alternatives Considered */}
+        {hasAlternatives && (
+          <div className="pt-2 border-t border-border-soft">
+            <button
+              type="button"
+              onClick={() => setShowAlternatives((prev) => !prev)}
+              className="text-xs text-muted hover:text-text flex items-center gap-1 transition"
+            >
+              <span>{showAlternatives ? '⌃' : '⌄'}</span>
+              <span>{showAlternatives ? 'Hide alternatives' : 'View alternatives'}</span>
+            </button>
+
+            {showAlternatives && (
+              <div className="mt-2.5 space-y-1.5 pl-2 border-l border-border">
+                {decision.alternativesConsidered.map((alt, i) => (
+                  <div key={i} className="text-xs">
+                    <span className="font-medium text-text">{formatFailureReason(alt.action)}</span>
+                    <span className="text-muted ml-1.5">— {alt.rejectedBecause}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
     </Card>
   );
-}
+}

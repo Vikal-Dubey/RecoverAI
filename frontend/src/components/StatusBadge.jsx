@@ -1,16 +1,17 @@
 const STATUS_STYLES = {
-  FAILED: 'bg-red-100 text-red-700',
-  RECOVERING: 'bg-amber-100 text-amber-700',
-  RECOVERED: 'bg-green-100 text-green-700',
-  ESCALATED: 'bg-purple-100 text-purple-700',
-  STOPPED: 'bg-gray-200 text-gray-600',
+  RECOVERED: 'bg-accent-dim text-accent',
+  FAILED: 'bg-danger-dim text-danger',
+  ESCALATED: 'bg-warn-dim text-warn',
+  STOPPED: 'bg-surface-2 text-muted',
+  RECOVERING: 'bg-warn-dim text-warn',
 };
 
 export default function StatusBadge({ status }) {
-  const style = STATUS_STYLES[status] || 'bg-gray-100 text-gray-600';
+  const norm = (status || '').toUpperCase();
+  const style = STATUS_STYLES[norm] || 'bg-surface-2 text-muted';
   return (
-    <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${style}`}>
-      {status}
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold tracking-wide ${style}`}>
+      {norm || 'UNKNOWN'}
     </span>
   );
-}
+}
