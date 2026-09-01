@@ -74,6 +74,47 @@ app.post('/payments/simulate-failure', async (req, res) => {
   }
 });
 
+// --- Dev/demo trigger for a specific payment ---
+app.post('/payments/:id/simulate-failure', async (req, res) => {
+  try {
+    const { failureReason } = req.body || {};
+
+    let payment = await withRetry(() =>
+      prisma.payment.findUnique({ where: { id: req.params.id } })
+    );
+
+    if (!payment) {
+      return res.status(404).json({ error: 'Payment not found' });
+    }
+
+    // Reset status to FAILED and optionally update failure reason for the scenario
+    payment = await withRetry(() =>
+      prisma.payment.update({
+        where: { id: payment.id },
+        data: {
+          status: 'FAILED',
+          ...(failureReason ? { failureReason } : {}),
+        },
+      })
+    );
+
+    const webhookPayload = {
+      event: 'payment.failed',
+      created_at: Date.now(),
+      payload: { payment: { id: payment.id } },
+    };
+
+    io.emit('payment:failed', { paymentId: payment.id });
+    const result = await handlePaymentFailedEvent(webhookPayload);
+    io.emit('recovery:completed', result);
+
+    res.json({ success: true, result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // --- Execute a scheduled retry, and loop the agent again if it fails ---
 app.post('/payments/:id/recovery/execute', async (req, res) => {
   try {
