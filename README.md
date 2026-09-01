@@ -1,177 +1,324 @@
-# RecoverAI — AI Agent for Failed Payment Recovery
+# RecoverAI — Autonomous AI Agent for Failed Payment Recovery
 
-Built for Razorpay's AI Intern Buildathon — **Track 3: AI Revenue Recovery**
+> **Built for Razorpay's AI Intern Buildathon — Track 3: AI Revenue Recovery**
 
-RecoverAI is an AI-driven payment recovery agent that detects failed or dropped payments, diagnoses *why* they failed, and decides the smartest recovery action — retry now, retry after a delay, notify the customer, escalate to a human, or stop — instead of blindly retrying every failure the way traditional systems do. Every decision is backed by an LLM's reasoning and validated against a deterministic policy engine, with a full audit trail persisted for transparency.
+RecoverAI is an intelligent, autonomous payment recovery agent that diagnoses *why* a payment failed and orchestrates the optimal recovery path — whether that is an immediate retry, an exponential delayed retry, a localized customer notification, human escalation, or a deliberate stop. 
 
----
-
-## The Problem
-
-When a payment fails — card declined, insufficient funds, bank timeout, expired card, network drop — most systems respond the same way regardless of *why* it failed: retry a few times and give up. This wastes attempts on unrecoverable failures (a hard decline will never succeed no matter how many times you retry), annoys customers with pointless retries on issues only they can fix (an expired card needs a new card, not another attempt), and under-uses cheap, effective interventions (a simple notification often resolves insufficient-funds failures faster and cheaper than repeated bank calls).
-
-RecoverAI treats recovery as a *diagnosis-then-action* problem: classify the failure, reason about the best response given the payment and customer's history, validate that response against hard business rules, then act.
+Instead of blindly retrying every failure (which burns gateway fees, annoys customers, and risks bank blacklisting), RecoverAI couples **LLM-driven diagnosis** with a **deterministic policy safety engine**, backed by a real-time event-driven dashboard and scientific A/B benchmarking.
 
 ---
 
-## Architecture
+## 📑 Table of Contents
+
+- [The Problem](#-the-problem)
+- [The RecoverAI Solution](#-the-recoverai-solution)
+- [Core Architecture & Principles](#-core-architecture--principles)
+- [Key Features](#-key-features)
+- [Deterministic Policy Engine](#-deterministic-policy-engine)
+- [AI vs. Baseline Experiment Framework](#-ai-vs-baseline-experiment-framework)
+- [Data Model & Schema](#-data-model--schema)
+- [API Reference](#-api-reference)
+- [Tech Stack](#-tech-stack)
+- [Directory Structure](#-directory-structure)
+- [Getting Started & Local Setup](#-getting-started--local-setup)
+- [Live Demo Walkthrough](#-live-demo-walkthrough)
+
+---
+
+## 🚨 The Problem
+
+Traditional payment recovery mechanisms are rigid, dumb, and brute-force:
+1. **Blind Retries**: When a payment fails, traditional systems retry 3–4 times automatically regardless of failure reason.
+2. **Wasted Cost & Bank Flagging**: Retrying hard declines (lost/stolen cards, invalid accounts) has a 0% success rate while incurring payment gateway failure penalties and increasing risk score with card networks.
+3. **Customer Friction**: Retrying an expired card or insufficient-funds account without notifying the customer creates repeated invisible failures without giving the customer a chance to fix it.
+4. **Lack of Explainability**: Operations teams have no visibility into *why* a retry happened or why recovery failed.
+
+---
+
+## 💡 The RecoverAI Solution
+
+RecoverAI transforms payment recovery into a **Diagnosis-Then-Action** pipeline:
 
 ```
-┌─────────────────┐
-│  Payment Failed  │  (webhook or simulated event)
-└────────┬─────────┘
-         ▼
-┌─────────────────────┐      ┌──────────────────────┐
-│   Recovery Agent      │────▶│   Gemini API           │
-│  (recoveryAgent.js)   │◀────│  (diagnosis + strategy)│
-└────────┬─────────────┘      └──────────────────────┘
-         ▼
-┌─────────────────────┐
-│   Policy Engine        │  (deterministic rule checks —
-│  (policyEngine.js)     │   max retries, hard decline,
-└────────┬─────────────┘   expired card, high value,
-         ▼                  retry interval, notification
-┌─────────────────────┐    limits, recovery window)
-│   Action Execution     │
-│  (agentTools.js)       │  retry / notify / escalate / stop
-└────────┬─────────────┘
-         ▼
-┌─────────────────────┐
-│  Audit Trail (Postgres)│  AgentDecision → PolicyCheck →
-│                        │  RecoveryAttempt → AuditLog
-└────────┬─────────────┘
-         ▼
-┌─────────────────────┐
-│  Recovery Inbox (UI)   │  React dashboard — AI reasoning
-│                        │  + policy checks side by side
-└─────────────────────┘
+[ Failed Payment Event ]
+          │
+          ▼
+  ┌───────────────┐
+  │  AI Diagnosis │ ─── Gemini evaluates failure category, customer LTV, risk & history
+  └───────┬───────┘
+          │ (Proposes Action + Reasoning + Hinglish Message)
+          ▼
+  ┌───────────────┐
+  │ Policy Engine │ ─── Deterministic safety rules validate, throttle, or override
+  └───────┬───────┘
+          │ (Approved / Enforced Strategy)
+          ▼
+  ┌───────────────┐
+  │ Execution Hub │ ─── Retries / Multi-channel Notification / Escalation / Stop
+  └───────┬───────┘
+          │
+          ▼
+  ┌───────────────┐
+  │  Audit Trail  │ ─── State transitions, decisions, and audit events saved to Postgres
+  └───────────────┘
 ```
 
-**Design principle:** the LLM proposes, the policy engine disposes. Gemini analyzes the payment and suggests a strategy with reasoning, but a deterministic rules layer has final authority — this keeps the system safe and auditable even if the model's judgment is imperfect, and makes every action explainable in plain business terms ("expired card requires customer action", "amount exceeds high-value threshold, escalate to human") rather than an opaque model output.
+### Core Design Principle: *LLM Proposes, Policy Engine Disposes*
+* **Gemini LLM**: Acts as an intuitive diagnostic strategist — evaluates nuanced customer context, failure codes, and formulates recovery approaches alongside rejected alternatives and personalized communication.
+* **Policy Engine**: Acts as the deterministic guardrail — guarantees that hard business rules (rate limits, value thresholds, retry caps) can **never** be bypassed by hallucination or stochastic variance.
 
 ---
 
-## Tech Stack
+## 🌟 Key Features
 
-| Layer | Technology |
-|---|---|
-| Backend | Node.js, Express |
-| Database | PostgreSQL (Neon, serverless) via Prisma ORM |
-| AI | Google Gemini API (`gemini-3.6-flash`), structured JSON output |
-| Real-time | Socket.io |
-| Frontend | React (Vite), Tailwind CSS, React Router, Axios |
-| Auth-ready patterns | JWT via HTTP-only cookies (reused from prior projects, not yet wired into this app) |
+### 1. 🧠 Intelligent LLM Diagnosis Engine
+- **Failure Categorization**:
+  - **Transient / Technical** (`network_error`, `bank_timeout`, `temporary_decline`): Safe for autonomous exponential/delayed retry.
+  - **Customer Action Required** (`insufficient_funds`, `expired_card`): Requires customer intervention; triggers notification path.
+  - **Terminal / Non-Recoverable** (`hard_decline`): Non-recoverable; immediately terminates to prevent unnecessary costs.
+- **Alternatives Evaluation**: Forces the model to evaluate and explain why at least two alternative strategies were rejected.
+- **Hinglish Customer Communication**: Dynamically writes natural, polite Hinglish messages (e.g., *"Aapka payment bank timeout ki wajah se complete nahi ho paya..."*) for notifications and escalations.
 
----
+### 2. 🛡️ 7-Point Deterministic Policy Engine
+Every recommendation must pass through a strict rule evaluation before execution:
+- **Max Retries Check**: Hard cap of 3 retry attempts per transaction.
+- **Hard Decline Guard**: Immediately stops non-recoverable failures.
+- **Expired Card Guard**: Blocks automated bank retries; mandates customer notification.
+- **Recovery Window**: Discontinues recovery actions after 7 days from initial failure.
+- **Minimum Retry Interval**: Enforces a 30-minute cooling interval between retries to avoid gateway spamming.
+- **High-Value Threshold**: Automatically escalates transactions $> ₹5,000$ (500,000 paise) for human review.
+- **Notification Rate Limiting**: Caps notifications at 2 per 24-hour window to protect customer experience.
 
-## Data Model
+### 3. 📊 Real-Time Operations Dashboard & Recovery Inbox
+- **Recovery Inbox**: Live table displaying real-time payments, failure categories, AI recommendations, and recovery states.
+- **Interactive Recovery Stepper**: 5-step visual tracking (`Payment Failed` → `AI Recommendation` → `Policy Check` → `Recovery` → `Outcome`).
+- **Customer Risk & LTV Intelligence**: Visual risk scoring (Low, Medium, High) derived from customer lifetime value and historical transaction success rate.
+- **Side-by-Side Transparency**: AI reasoning panel with confidence metrics displayed alongside policy checks and audit trails.
+- **Live Activity Feed**: WebSocket-powered live ticker displaying recovery completions, escalations, and decisions as they happen.
+- **System Health Monitor**: Live popover displaying connectivity health for the Backend API, PostgreSQL Database, and Gemini AI.
 
-- **Payment** — the failed transaction: amount, method, failure reason, retry/notification counters, status
-- **Customer** — success/fail history and lifetime value, used as context for the AI's diagnosis
-- **AgentDecision** — one row per AI diagnosis: failure type, recoverability score, chosen strategy, confidence, reasoning, alternatives considered
-- **PolicyCheck** — one row per deterministic rule evaluated against a decision (7 rules: max retries, hard decline, expired card, recovery window, min retry interval, high value, notification limit)
-- **RecoveryAttempt** — a scheduled/executed retry and its outcome
-- **AgentState** — the payment's current position in its recovery lifecycle (`ANALYZING` → `DECISION_MADE` → `POLICY_CHECKED` → `ACTION_SCHEDULED`/`COMPLETED`/`ESCALATED`/`STOPPED`)
-- **AuditLog** — a flat, timestamped event log of everything that happened to a payment (retry succeeded/failed, customer notified, escalated, stopped)
-
-Together, `AgentDecision` + `PolicyCheck` + `RecoveryAttempt` + `AuditLog` form the complete audit trail the dashboard renders per payment.
-
----
-
-## How a Decision Is Made
-
-1. **Diagnosis** — Gemini receives the payment's details, the customer's payment history, and prior recovery attempts. It classifies the failure and proposes an action (`retry_now`, `retry_delayed`, `notify_customer`, `escalate`, or `stop`), with a confidence score and reasoning, after explicitly considering and rejecting at least two alternative strategies.
-
-   Failure types are explicitly categorized in the system prompt to avoid ambiguous classification:
-   - **Transient/technical** (`network_error`, `bank_timeout`, `temporary_decline`) — safe to retry automatically
-   - **Customer-action-required** (`insufficient_funds`, `expired_card`) — retrying blindly won't help; notify instead
-   - **Terminal** (`hard_decline`) — non-recoverable; stop
-
-2. **Policy validation** — the proposed action is checked against 7 deterministic rules (e.g., hard declines always stop regardless of what the AI suggests; high-value payments always escalate to a human rather than auto-retry; notifications are rate-limited to avoid spamming the customer). A "failed" check here usually means a rule correctly intervened, not a system error.
-
-3. **Execution** — the approved action runs: a retry is scheduled, the customer is notified, the case is escalated, or recovery is stopped — each persisting its own audit trail entry.
+### 4. 🧪 Scientific A/B Experimentation Engine
+- Simulates identical failure batches through two parallel tracks:
+  - **RecoverAI Arm**: Full diagnostic + policy-controlled recovery loop.
+  - **Baseline Arm**: Traditional 3x naive retry strategy.
+- Computes **Cost-Adjusted Net Value Recovered**:
+  $$\text{Net Value} = \text{Revenue Recovered} - (\text{Retry Attempts} \times \text{Cost}_{\text{attempt}} + \text{Notifications} \times \text{Cost}_{\text{notify}})$$
+- Highlights **Attempt Efficiency** (3–4x fewer attempts per payment) and incremental revenue recovery.
+- Single-click **Text/Report Export** for offline business analysis.
 
 ---
 
-## API Endpoints
+## 🏛️ System Architecture
 
-| Method | Route | Purpose |
+```mermaid
+flowchart TD
+    subgraph Ingestion
+        WH[POST /webhooks/payment-failed]
+        SIM[POST /payments/simulate-failure]
+    end
+
+    subgraph Core_Agent [RecoverAI Engine]
+        RA[Recovery Agent\nrecoveryAgent.js]
+        GEMINI[Google Gemini API\ngemini-2.5-flash]
+        PE[Policy Engine\npolicyEngine.js]
+        EXEC[Action Execution\nagentTools.js & recoveryService.js]
+    end
+
+    subgraph Data_Layer [Neon PostgreSQL]
+        DB[(Prisma ORM\nPayments, Customers, Decisions,\nPolicyChecks, AuditLogs)]
+    end
+
+    subgraph Realtime_UI [Frontend Dashboard]
+        WS[Socket.io Server]
+        UI[React + Vite + Tailwind Dashboard]
+    end
+
+    WH --> RA
+    SIM --> RA
+    RA <-->|Prompt & JSON Response| GEMINI
+    RA -->|Proposed Action| PE
+    PE -->|Approved / Overridden Action| EXEC
+    EXEC --> DB
+    RA --> DB
+    EXEC -->|Emit State Changes| WS
+    WS --> UI
+    UI -->|REST Queries / Manual Actions| Ingestion
+```
+
+---
+
+## 🗄️ Data Model & Schema
+
+RecoverAI uses Prisma with PostgreSQL:
+
+| Model | Purpose | Key Fields |
 |---|---|---|
-| `POST` | `/webhooks/payment-failed` | Real gateway entry point — triggers the full agent loop for a payment |
-| `POST` | `/payments/simulate-failure` | Dev/demo trigger — builds a gateway-shaped event for testing |
-| `POST` | `/payments/:id/recovery/execute` | Executes a scheduled retry attempt; loops the agent again on failure if retries remain |
-| `GET` | `/payments` | Lists payments for the dashboard table, optionally filtered by `?status=` |
-| `GET` | `/payments/:id` | Full audit trail for one payment — decisions, policy checks, attempts, state, logs |
-| `GET` | `/dashboard/stats` | Aggregate counts: total, recovered, escalated, failed, recovery rate |
-| `POST` | `/experiments/run` | Runs the RecoverAI-vs-baseline batch experiment |
+| **`Customer`** | Historical customer profile & value | `name`, `email`, `successCount`, `failCount`, `ltv` |
+| **`Payment`** | Failed transaction details | `amount`, `currency`, `status`, `failureReason`, `retryCount`, `notificationCount` |
+| **`AgentDecision`** | LLM diagnostic output & rationale | `failureType`, `recoverabilityScore`, `strategy`, `confidence`, `reasoning`, `customerMessage`, `alternativesConsidered` |
+| **`PolicyCheck`** | Deterministic rule verification | `ruleName`, `passed`, `reason`, `decisionId` |
+| **`RecoveryAttempt`**| Individual retry executions | `scheduledAt`, `executedAt`, `outcome`, `paymentId` |
+| **`AgentState`** | Lifecycle state tracker | `currentState` (`ANALYZING`, `DECISION_MADE`, `ACTION_SCHEDULED`, `COMPLETED`, etc.) |
+| **`AuditLog`** | Immutable chronological event log | `event`, `details`, `timestamp`, `paymentId` |
 
 ---
 
-## The Experiment: RecoverAI vs. a Naive Baseline
+## 🔌 API Reference
 
-To validate that the agent's decisions actually add value, `experimentService.js` runs the same batch of simulated payment failures through two arms:
+### Webhooks & Ingestion
+- `POST /webhooks/payment-failed` — Gateway webhook endpoint for failed payment events.
+- `POST /payments/simulate-failure` — Simulates a failure on a random or type-specific payment.
+- `POST /payments/:id/simulate-failure` — Re-triggers simulation on a specific payment scenario.
 
-- **RecoverAI** — full agent loop (diagnosis → policy → action)
-- **Baseline** — blindly retries every failure up to 3 times, no diagnosis
+### Recovery Execution & Inspection
+- `POST /payments/:id/recovery/execute` — Triggers execution of a scheduled recovery attempt.
+- `GET /payments` — Retrieves payments list (supports `?status=` and `?notified=true` filters).
+- `GET /payments/:id` — Full audit trail for a single payment (decisions, policy checks, attempts, logs).
+- `GET /dashboard/stats` — High-level metrics (total payments, recovered, escalated, failed, recovery rate).
 
-Both arms see identical payment scenarios (same failure types, amounts, customers) so the comparison is fair. Each arm is scored on revenue recovered, recovery rate, average attempts per payment, and a **cost-adjusted net value** metric that accounts for the operational cost of each action:
+### Experiments & System Health
+- `POST /experiments/run` — Runs a batch simulation comparing RecoverAI against naive baseline.
+- `GET /experiments/latest` — Fetches the results of the most recent experiment batch.
+- `GET /health` — Returns status of backend server, database connection, and Gemini API.
+
+---
+
+## 💻 Tech Stack
+
+- **Backend**: Node.js, Express 5, Socket.io
+- **Database & ORM**: PostgreSQL (Neon Serverless), Prisma ORM
+- **AI / LLM**: Google Gemini API (`gemini-2.5-flash` / `@google/genai`) with Structured Outputs
+- **Frontend**: React 19, Vite, Tailwind CSS v4, React Router 7, Axios
+- **Real-time**: WebSockets via Socket.io-client
+
+---
+
+## 📁 Directory Structure
 
 ```
-netValueRecovered = revenueRecovered − (totalRetryAttempts × costPerAttempt + totalNotifications × costPerNotification)
+RecoverAI/
+├── README.md
+├── backend/
+│   ├── package.json
+│   ├── prisma/
+│   │   ├── schema.prisma           # Database schema definition
+│   │   └── seed.js                 # Seed script with hero customer personas
+│   └── src/
+│       ├── server.js               # Express server & WebSocket setup
+│       ├── agents/
+│       │   ├── prompts.js          # System prompts with Hinglish message spec
+│       │   ├── recoveryAgent.js    # Gemini LLM orchestration
+│       │   └── agentTools.js       # Action handlers & DB loggers
+│       ├── recovery/
+│       │   ├── policyEngine.js     # 7 deterministic safety rules
+│       │   ├── recoveryService.js  # Execution runner for retries
+│       │   ├── simulator.js        # Realistic payment outcome simulator
+│       │   └── experimentService.js# RecoverAI vs Baseline A/B runner
+│       └── webhooks/
+│           └── paymentWebhook.js   # Ingestion entry point
+└── frontend/
+    ├── package.json
+    ├── vite.config.js
+    └── src/
+        ├── App.jsx                 # Routes & Layout shell
+        ├── api/payments.js         # Axios client & API handlers
+        ├── components/
+        │   ├── ActivityFeed.jsx    # Real-time WebSocket activity ticker
+        │   ├── CustomerRiskPanel.jsx # LTV & risk tier breakdown
+        │   ├── DashboardStats.jsx  # Overview metrics cards
+        │   ├── DiagnosisPanel.jsx  # AI recommendation & alternatives
+        │   ├── PolicyChecksPanel.jsx# Policy engine rule results
+        │   ├── RecoveryStepper.jsx # 5-step visual lifecycle progress
+        │   ├── SystemHealth.jsx    # Live infrastructure status popover
+        │   └── Timeline.jsx        # Chronological audit log
+        └── pages/
+            ├── PaymentsListPage.jsx # Recovery Inbox table & simulator
+            ├── PaymentDetailPage.jsx# Deep-dive payment audit view
+            └── ExperimentResultsPage.jsx # A/B benchmark visualizer
 ```
 
-This exists because raw ₹ recovered structurally favors brute-force retrying — a system that retries every payment blindly can "accidentally" recover revenue on transient failures the same way a smarter agent does, without being charged for the operational cost (gateway fees, bank-flagging risk, customer friction) of doing so. The net-value metric makes the comparison fair: RecoverAI consistently uses roughly 3–4x fewer attempts per payment than baseline, which matters even in runs where raw recovery rate is close between the two arms.
+---
 
-**A note on methodology:** results vary run-to-run because failure types are drawn randomly per batch, which shifts the mix of retryable vs. notify-only cases. A single 40-payment run is not a fully stable comparison — a fair final number should average several runs or use a larger sample size to let the failure-type distribution converge.
+## 🚀 Getting Started & Local Setup
+
+### Prerequisites
+- **Node.js**: v18.0.0 or later
+- **PostgreSQL**: Local PostgreSQL or a free [Neon](https://neon.tech) serverless database
+- **Gemini API Key**: Obtainable from [Google AI Studio](https://aistudio.google.com/)
 
 ---
 
-## Build Phases
+### 1. Backend Setup
 
-### Backend
-1. Payment model, customer model, and failure simulation
-2. Gemini-based diagnosis agent with structured JSON output
-3. Deterministic policy engine (7 safety/business rules)
-4. Full audit trail persistence (`AgentDecision`, `PolicyCheck`, `RecoveryAttempt`, `AuditLog`, `AgentState`)
-5. Webhook-driven execution loop, including automatic re-analysis on retry failure
-6. Batch experiment framework comparing RecoverAI against a naive baseline
-7. Payments-list endpoint with status filtering, for the dashboard
-8. Cost-adjusted `netValueRecovered` metric for a fairer experiment comparison
-
-### Frontend
-1. Vite + React + Tailwind scaffold, routing shell, API client layer
-2. Payments List ("Recovery Inbox") — filterable table with live status, AI action, and confidence per row, plus a "Simulate Failure" control for live demos
-3. Payment Detail view — AI reasoning and policy engine checks shown side by side, with a chronological timeline of everything that happened to the payment
-4. Dashboard overview — top-level recovery stats
-5. Real-time updates via Socket.io — list and detail views update live as the agent processes payments, without manual refresh
-6. Demo polish — loading/empty/error states, final visual pass
-
----
-
-## Key Engineering Decisions Worth Noting
-
-- **LLM proposes, rules dispose.** Keeping the policy engine deterministic and separate from the LLM means every action is explainable and safe by construction, even when the model's confidence or reasoning is off.
-- **Explicit failure-type categorization in the prompt.** Early testing showed Gemini would misclassify `bank_timeout` as needing customer notification (its name sounds bank-side rather than transient) purely because the prompt gave no guidance beyond the bare string. Adding an explicit transient/customer-action/terminal categorization fixed this and meaningfully changed the experiment's outcome.
-- **Simulating the notification channel.** The first experiment run showed RecoverAI apparently "losing" to the naive baseline — investigation revealed the simulator had no model for what happens after a customer is notified, so RecoverAI's smarter notify decisions were never credited with any chance of success. Adding a modeled self-resolution probability per failure type made the comparison fair.
-- **Separating the experiment path from the live/webhook path.** Batch experiments intentionally skip full audit-trail persistence for speed and to avoid polluting demo data with test-run noise; the webhook path persists everything for the dashboard to display.
-
----
-
-## Setup
-
-**Backend**
 ```bash
+# Navigate to backend directory
 cd backend
-npm install
-# configure .env with DATABASE_URL (Neon Postgres) and GEMINI_API_KEY
-npx prisma generate
-npm run dev
-```
 
-**Frontend**
-```bash
-cd frontend
+# Install dependencies
 npm install
-# configure .env with VITE_API_URL=http://localhost:5000
+
+# Create environment configuration
+# Create backend/.env with:
+# DATABASE_URL="postgresql://user:password@host/neondb?sslmode=require"
+# GEMINI_API_KEY="your-gemini-api-key"
+# PORT=5000
+# FRONTEND_URL="http://localhost:5173"
+
+# Generate Prisma client and migrate schema
+npx prisma generate
+npx prisma db push
+
+# Seed database with sample transactions & hero personas
+npm run seed
+
+# Start the backend server
 npm run dev
 ```
+*Backend server will start on `http://localhost:5000`.*
+
+---
+
+### 2. Frontend Setup
+
+```bash
+# Open a new terminal and navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Create environment configuration
+# Create frontend/.env with:
+# VITE_API_URL=http://localhost:5000
+
+# Start the Vite development server
+npm run dev
+```
+*Frontend application will be accessible at `http://localhost:5173`.*
+
+---
+
+## 🎬 Live Demo Walkthrough
+
+1. **Explore the Recovery Inbox (`/`)**:
+   - View seeded payments categorized by status (`Failed`, `Recovered`, `Escalated`, `Stopped`).
+   - Check the **System Health** indicator at the top right to verify all services are operational.
+2. **Simulate a Payment Failure**:
+   - Click **"Simulate Failure"** to inject a targeted failure (e.g. `insufficient_funds` or `network_error`).
+   - Or click **"Simulate Batch (8x)"** to trigger multiple concurrent payment recovery lifecycles.
+   - Watch the **Live Activity Feed** stream decisions and outcomes in real time.
+3. **Inspect the Payment Audit Trail (`/payments/:id`)**:
+   - Observe the **Recovery Stepper** showing progress through diagnostic and policy phases.
+   - Read the **AI Recommendation** explaining the strategy, confidence score, rejected alternatives, and custom **Hinglish customer notification**.
+   - Check the **Policy Engine** checks showing deterministic safety rule validations.
+   - Review the full chronological **Audit Timeline**.
+4. **Run the A/B Experiment (`/experiments`)**:
+   - Click **"Run Experiment"** to test 40 payments through RecoverAI vs. Naive Baseline.
+   - Compare **Net Value Recovered**, **Recovery Rate**, and **Average Attempts per Payment**.
+   - Click **"Export Summary"** to download the benchmark report.
+
+---
+
+## ⚖️ License
+
+Distributed under the MIT License. Built with ❤️ for Razorpay's AI Intern Buildathon.
